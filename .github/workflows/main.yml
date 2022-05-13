@@ -55,4 +55,4 @@ jobs:
         env:
           CI: false
       - name: Deploy app build to S3 bucket
-        run: aws s3 sync ./buid/ s3://${{ secrets.AWS_S3_BUCKET }} --delete
+        run: aws s3 sync ./build/ s3://${{ secrets.AWS_S3_BUCKET }} --delete
