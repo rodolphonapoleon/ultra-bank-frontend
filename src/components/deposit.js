@@ -52,7 +52,7 @@ function Deposit() {
     // console.log("idtoken:", idToken);
     (async () => {
       await fetch(
-        `http://localhost:3000/account/update/${ctx.currentUser.email}/${amount}`,
+        `http://ultra-bank-frontend.s3-website-us-east-1.amazonaws.com/account/update/${ctx.currentUser.email}/${amount}`,
         {
           method: "GET",
           headers: {

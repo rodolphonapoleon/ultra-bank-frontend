@@ -46,7 +46,7 @@ function SignIn() {
   const [data, setData] = useState([]);
   useEffect(async () => {
     // fetch all accounts from API
-    await fetch("http://localhost:3000/account/all")
+    await fetch("http://ultra-bank-frontend.s3-website-us-east-1.amazonaws.com/account/all")
       .then((response) => response.json())
       .then((data) => {
         console.log(data);
@@ -87,7 +87,7 @@ function SignIn() {
         const userLoginData = data.filter((item) => item.email == user.email);
         console.log(userLoginData);
         if (userLoginData.length == 0) {
-          const url = `http://localhost:3000/account/create/${user.displayName}/${user.email}`;
+          const url = `http://ultra-bank-frontend.s3-website-us-east-1.amazonaws.com/account/create/${user.displayName}/${user.email}`;
           (async () => {
             var res = await fetch(url);
             var data = await res.json();

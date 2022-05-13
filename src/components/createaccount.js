@@ -89,7 +89,7 @@ function CreateAccount() {
         // const errorMessage = error.message;
         // ..
       });
-    const url = `http://ultra-exter-D9HORDI0JX4Q-735322731.us-east-1.elb.amazonaws.com/account/create/${name}/${email}`;
+    const url = `http://ultra-bank-frontend.s3-website-us-east-1.amazonaws.com/account/create/${name}/${email}`;
     (async () => {
       var res = await fetch(url);
       var data = await res.json();
