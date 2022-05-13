@@ -47,7 +47,7 @@ function Login() {
   useEffect(async () => {
     // fetch all accounts from API
     await fetch(
-      "http://ultra-bank-frontend.s3-website-us-east-1.amazonaws.com/account/all"
+      "http://ultra-exter-D9HORDI0JX4Q-735322731.us-east-1.elb.amazonaws.com/account/all"
     )
       .then((response) => response.json())
       .then((data) => {
@@ -88,7 +88,7 @@ function Login() {
         const userLoginData = data.filter((item) => item.email == user.email);
         console.log(userLoginData);
         if (userLoginData.length == 0) {
-          const url = `http://ultra-bank-frontend.s3-website-us-east-1.amazonaws.com/account/create/${user.displayName}/${user.email}`;
+          const url = `http://ultra-exter-D9HORDI0JX4Q-735322731.us-east-1.elb.amazonaws.com/account/create/${user.displayName}/${user.email}`;
           (async () => {
             var res = await fetch(url);
             var data = await res.json();
