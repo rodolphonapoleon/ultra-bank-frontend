@@ -38,14 +38,14 @@ function NavBar() {
             id="navbarNav"
           >
             <div className="navbar-nav nav-pills">
-              <NavLink
+              {/* <NavLink
                 to="/"
                 className={({ isActive }) =>
                   isActive ? "nav-link fs-4 ms-3 active" : "nav-link fs-4 ms-3"
                 }
               >
                 Home
-              </NavLink>
+              </NavLink> */}
               {!userLogin ? (
                 <NavLink
                   to="createaccount"
@@ -54,6 +54,7 @@ function NavBar() {
                       ? "nav-link fs-4 ms-3 active"
                       : "nav-link fs-4 ms-3"
                   }
+                  className="btn btn-outline-primary rounded ms-4"
                 >
                   Create Account
                 </NavLink>
@@ -88,7 +89,7 @@ function NavBar() {
               ) : (
                 ""
               )}
-              {userLogin ? (
+              {/* {userLogin ? (
                 <NavLink
                   to="transfer"
                   className={({ isActive }) =>
@@ -101,23 +102,15 @@ function NavBar() {
                 </NavLink>
               ) : (
                 ""
-              )}
-              <NavLink
+              )} */}
+              {/* <NavLink
                 to="alldata"
                 className={({ isActive }) =>
                   isActive ? "nav-link fs-4 ms-3 active" : "nav-link fs-4 ms-3"
                 }
               >
                 All Data
-              </NavLink>
-              <NavLink
-                to="signin"
-                className={({ isActive }) =>
-                  isActive ? "nav-link fs-4 ms-3 active" : "nav-link fs-4 ms-3"
-                }
-              >
-                Signin
-              </NavLink>
+              </NavLink> */}
             </div>
           </div>
         </div>

@@ -14,6 +14,9 @@ function Logout() {
         </Col>
       </Row>
       <h1>You have succesfully logout</h1>
+      {/* {setTimeout(() => {
+        console.log("hola");
+      }, "5000")} */}
     </>
   );
 }

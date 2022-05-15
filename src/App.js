@@ -11,7 +11,6 @@ import Logout from "./components/logout";
 import { UserContext } from "./context.js";
 import Footer from "./components/footer";
 import Transfer from "./components/transfer.js";
-import SignIn from "./components/signin.js";
 
 function App() {
   return (
@@ -46,7 +45,6 @@ function App() {
                 <Route path="/login/" element={<Login />} />
                 <Route path="/logout/" element={<Logout />} />
                 <Route path="/transfer/" element={<Transfer />} />
-                <Route path="/signin/" element={<SignIn />} />
               </Routes>
             </div>
             <div className="row bg-primary">

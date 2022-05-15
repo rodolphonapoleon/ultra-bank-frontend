@@ -50,9 +50,7 @@ function Transfer() {
 
     // check if user exists in the DB
     (async () => {
-      await fetch(
-        `http://ultra-exter-D9HORDI0JX4Q-735322731.us-east-1.elb.amazonaws.com/account/findOne/${emailToTransfer}`
-      )
+      await fetch(`http://localhost:3000/account/findOne/${emailToTransfer}`)
         .then((response) => response.json())
         .then((data) => console.log(data));
     })();
@@ -62,7 +60,7 @@ function Transfer() {
     // console.log("idtoken:", idToken);
     (async () => {
       await fetch(
-        `http://ultra-exter-D9HORDI0JX4Q-735322731.us-east-1.elb.amazonaws.com/account/update/${ctx.currentUser.email}/-${amount}`,
+        `http://localhost:3000/account/update/${ctx.currentUser.email}/-${amount}`,
         {
           method: "GET",
           headers: {
@@ -73,7 +71,7 @@ function Transfer() {
     })();
     (async () => {
       await fetch(
-        `http://ultra-exter-D9HORDI0JX4Q-735322731.us-east-1.elb.amazonaws.com/account/update/${emailToTransfer}/${amount}`,
+        `http://localhost:3000/account/update/${emailToTransfer}/${amount}`,
         {
           method: "GET",
           headers: {

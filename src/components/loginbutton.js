@@ -23,15 +23,19 @@ function LoginButton() {
   };
 
   return userLogin ? (
-    <NavLink
-      to="/logout"
-      onClick={() => handleLogout()}
-      className="btn btn-primary rounded-pill ms-4"
-    >
-      Logout
-    </NavLink>
+    <>
+      <NavLink
+        to="/logout"
+        onClick={() => {
+          handleLogout();
+        }}
+        className="btn btn-primary rounded ms-4"
+      >
+        Logout
+      </NavLink>
+    </>
   ) : (
-    <NavLink to="/login" className="btn btn-primary rounded-pill ms-4">
+    <NavLink to="/login" className="btn btn-primary rounded ms-4">
       Login
     </NavLink>
   );

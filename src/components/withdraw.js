@@ -57,7 +57,7 @@ function Withdraw() {
 
     (async () => {
       await fetch(
-        `http://ultra-exter-D9HORDI0JX4Q-735322731.us-east-1.elb.amazonaws.com/account/update/${ctx.currentUser.email}/-${amount}`,
+        `http://ultra-exter-d9hordi0jx4q-735322731.us-east-1.elb.amazonaws.com/account/update/${ctx.currentUser.email}/-${amount}`,
         {
           method: "GET",
           headers: {
