@@ -2,12 +2,12 @@ import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDC0kn5xWzI9hJ5qZZ7PVVJor9Ye5KzvwE",
-  authDomain: "bad-bank-339cf.firebaseapp.com",
-  projectId: "bad-bank-339cf",
-  storageBucket: "bad-bank-339cf.appspot.com",
-  messagingSenderId: "128385907464",
-  appId: "1:128385907464:web:fd0a85c40a58b5f8798abd",
+  apiKey: process.env.REACT_APP_API_KEY,
+  authDomain: process.env.REACT_APP_AUTH_DOMAIN,
+  projectId: process.env.REACT_APP_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_STORAGE_BUCKET,
+  messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID,
+  appId: process.env.REACT_APP_APP_ID,
 };
 
 // Initialize Firebase

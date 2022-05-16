@@ -10,7 +10,7 @@ function AllData() {
   useEffect(() => {
     // fetch all accounts from API
     fetch(
-      "http://ultra-exter-d9hordi0jx4q-735322731.us-east-1.elb.amazonaws.com/account/all"
+      "http://localhost:3000/account/all"
     )
       .then((response) => response.json())
       .then((data) => {

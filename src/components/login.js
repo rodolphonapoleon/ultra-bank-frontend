@@ -47,7 +47,7 @@ function Login() {
   useEffect(async () => {
     // fetch all accounts from API
     await fetch(
-      "http://ultra-exter-d9hordi0jx4q-735322731.us-east-1.elb.amazonaws.com/account/all"
+      "http://localhost:3000/account/all"
     )
       .then((response) => response.json())
       .then((data) => {
@@ -102,7 +102,7 @@ function Login() {
         const userLoginData = data.filter((item) => item.email == user.email);
         console.log(userLoginData);
         if (userLoginData.length == 0) {
-          const url = `http://ultra-exter-d9hordi0jx4q-735322731.us-east-1.elb.amazonaws.com/account/create/${user.displayName}/${user.email}`;
+          const url = `http://localhost:3000/account/create/${user.displayName}/${user.email}`;
           (async () => {
             var res = await fetch(url);
             var data = await res.json();

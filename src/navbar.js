@@ -89,7 +89,7 @@ function NavBar() {
               ) : (
                 ""
               )}
-              {/* {userLogin ? (
+              {userLogin ? (
                 <NavLink
                   to="transfer"
                   className={({ isActive }) =>
@@ -102,7 +102,7 @@ function NavBar() {
                 </NavLink>
               ) : (
                 ""
-              )} */}
+              )}
               {/* <NavLink
                 to="alldata"
                 className={({ isActive }) =>
