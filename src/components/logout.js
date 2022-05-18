@@ -2,6 +2,8 @@ import { UserContext } from "../context";
 import LoginButton from "./loginbutton";
 import { useContext } from "react";
 import { Row, Col } from "react-bootstrap";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function Logout() {
   // const ctx = useContext(UserContext);
@@ -14,9 +16,7 @@ function Logout() {
         </Col>
       </Row>
       <h1>You have succesfully logout</h1>
-      {/* {setTimeout(() => {
-        console.log("hola");
-      }, "5000")} */}
+      <ToastContainer />
     </>
   );
 }

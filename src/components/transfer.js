@@ -5,7 +5,6 @@ import { Row, Col } from "react-bootstrap";
 import { auth } from "../firebase-config";
 import { onAuthStateChanged, getIdToken } from "firebase/auth";
 import { UserContext } from "../context";
-import { Link } from "react-router-dom";
 
 function Transfer() {
   const [show, setShow] = useState(true);
@@ -18,9 +17,22 @@ function Transfer() {
 
   const ctx = useContext(UserContext);
 
-  onAuthStateChanged(auth, async (user) => {
-    setIdToken(await getIdToken(user));
-  });
+  const [data, setData] = useState([]);
+  useEffect(async () => {
+    // fetch all accounts from API
+    await fetch(`http://${process.env.REACT_APP_SERVER_URL}/account/all`)
+      .then((response) => response.json())
+      .then((data) => {
+        // console.log(data);
+        setData(data);
+      });
+  }, []);
+
+  useEffect(() => {
+    onAuthStateChanged(auth, async (user) => {
+      if (user) setIdToken(await getIdToken(user));
+    });
+  }, []);
 
   function validate(field) {
     if (Number(field) != field) {
@@ -45,22 +57,26 @@ function Transfer() {
   }
 
   function handleTransfer() {
-    // console.log(amount);
     if (!validate(amount, "amount")) return;
+    if (emailToTransfer == ctx.currentUser.email) {
+      clearForm();
+      alert("Please enter the recipient email, not your email");
 
-    // check if user exists in the DB
-    (async () => {
-      await fetch(`http://localhost:3000/account/findOne/${emailToTransfer}`)
-        .then((response) => response.json())
-        .then((data) => console.log(data));
-    })();
+      return;
+    }
 
+    const userToTransfer = data.filter((item) => item.email == emailToTransfer);
+    // console.log(userToTransfer);
+    if (userToTransfer.length == 0) {
+      alert("There's no account associated to this email");
+      clearForm();
+      return;
+    }
     ctx.currentUser.balance -= parseInt(amount);
-
     // console.log("idtoken:", idToken);
     (async () => {
       await fetch(
-        `http://localhost:3000/account/update/${ctx.currentUser.email}/-${amount}`,
+        `http://${process.env.REACT_APP_SERVER_URL}/account/update/${ctx.currentUser.email}/-${amount}`,
         {
           method: "GET",
           headers: {
@@ -71,7 +87,7 @@ function Transfer() {
     })();
     (async () => {
       await fetch(
-        `http://localhost:3000/account/update/${emailToTransfer}/${amount}`,
+        `http://${process.env.REACT_APP_SERVER_URL}/account/update/${emailToTransfer}/${amount}`,
         {
           method: "GET",
           headers: {
@@ -80,12 +96,12 @@ function Transfer() {
         }
       );
     })();
-
     setShow(false);
   }
 
   function clearForm() {
     setAmount("");
+    setEmailToTransfer("");
     setIsdisabled(true);
     setShow(true);
   }
@@ -137,16 +153,6 @@ function Transfer() {
                   if (!e.currentTarget.value) setIsdisabled(true);
                 }}
               />
-              {/* <select
-                className="form-select"
-                onChange={(e) => {
-                  setEmailToTransfer(e.target.value);
-                }}
-              >
-                <option selected>Choose a recipient</option>
-                <option value="marco@gmail.com">MARCO - 4563</option>
-                <option value="">Add a recipient</option>
-              </select> */}
               <br />
               <br />
               <button
@@ -170,7 +176,7 @@ function Transfer() {
             <>
               <h5 className="fs-2 text-primary">Success</h5>
               <br />
-              <h5>You have transfered ${amount} </h5>
+              <h5>You have transferred ${amount} </h5>
               <div>Your balance is now ${ctx.currentUser.balance} </div>
               <br />
               <button

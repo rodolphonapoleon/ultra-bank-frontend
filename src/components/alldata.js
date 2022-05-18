@@ -9,9 +9,7 @@ function AllData() {
 
   useEffect(() => {
     // fetch all accounts from API
-    fetch(
-      "http://localhost:3000/account/all"
-    )
+    fetch(`http://${process.env.REACT_APP_SERVER_URL}/account/all`)
       .then((response) => response.json())
       .then((data) => {
         console.log(data);

@@ -2,7 +2,7 @@ import { useState, useContext, useEffect } from "react";
 import Card from "../context";
 import { UserContext } from "../context";
 import { NavLink, Link } from "react-router-dom";
-import { Row, Col } from "react-bootstrap";
+import { Row, Col, ToastContainer } from "react-bootstrap";
 import LoginButton from "./loginbutton";
 import { auth } from "../firebase-config";
 import {
@@ -35,50 +35,28 @@ function Login() {
   const [currentUser, setCurrentUser] = useState(null);
   const ctx = useContext(UserContext);
 
-  // onAuthStateChanged(auth, (user) => {
-  //   if (user) {
-  //     setUserLogin(true);
-  //   } else {
-  //     setUserLogin(false);
-  //   }
-  // });
-
   const [data, setData] = useState([]);
   useEffect(async () => {
     // fetch all accounts from API
-    await fetch(
-      "http://localhost:3000/account/all"
-    )
+    await fetch(`http://${process.env.REACT_APP_SERVER_URL}/account/all`)
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
+        // console.log(data);
         setData(data);
       });
   }, []);
 
   function handleLogin() {
-    // console.log(email, password);
-    // console.log(data);
-    // const userLoginData = data.filter(
-    //   (item) => item.email == email && item.password == password
-    // );
-    // console.log(userLoginData);
-    // if (userLoginData.length == 0) {
-    //   alert("email or password is incorrect");
-    //   clearForm();
-    //   return;
-    // }
-    // if (userLoginData.length != 0) {
     signInWithEmailAndPassword(auth, email, password)
       .then((res) => {
-        console.log(res.user);
+        // console.log(res.user);
         const user = res.user;
         const userLoginData = data.filter((item) => item.email == user.email);
         // setCurrentUser(userLoginData[0]);
         ctx.currentUser = userLoginData[0];
         setShow(false);
         // ctx.log = true;
-        console.log(ctx.currentUser);
+        // console.log(ctx.currentUser);
       })
       .catch((error) => {
         alert("email or password is incorrect");
@@ -100,9 +78,9 @@ function Login() {
         // The signed-in user info.
         const user = result.user;
         const userLoginData = data.filter((item) => item.email == user.email);
-        console.log(userLoginData);
+        // console.log(userLoginData);
         if (userLoginData.length == 0) {
-          const url = `http://localhost:3000/account/create/${user.displayName}/${user.email}`;
+          const url = `http://${process.env.REACT_APP_SERVER_URL}/account/create/${user.displayName}/${user.email}`;
           (async () => {
             var res = await fetch(url);
             var data = await res.json();
@@ -231,7 +209,6 @@ function Login() {
                   <div className="mt-4 mt-sm-5">
                     Don't have an account?{" "}
                     <Link to="/createaccount">Sign up here</Link>
-                    {/* <a href="/signup-light">Sign up here</a> */}
                   </div>
                 </div>
                 <div className="col-md-6 px-2 pt-2 pb-4 px-sm-5 pb-sm-5 pt-md-5">
@@ -252,7 +229,6 @@ function Login() {
                     <div className="px-3">Or</div>
                     <hr className="w-100"></hr>
                   </div>
-                  {/* <form className=""> */}
                   <div className="mb-4">
                     <label className="form-label" htmlFor="email">
                       Email address
@@ -307,14 +283,13 @@ function Login() {
                     </div>
                   </div>
                   <button
-                    disabled={isDisabled ? true : false}
+                    // disabled={isDisabled ? true : false}
                     type="submit"
                     className="btn btn-primary w-100 btn-lg"
                     onClick={handleLogin}
                   >
                     Sign in
                   </button>
-                  {/* </form> */}
                 </div>
               </div>
             </div>
@@ -324,6 +299,17 @@ function Login() {
         <>
           {googleUser ? (
             <>
+              <div className="text-end me-5">
+                {ctx.currentUser.name} |{" "}
+                <small className="">
+                  <NavLink to="">Update Profile</NavLink>
+                </small>
+              </div>
+              <Row>
+                <Col className="text-end me-5">
+                  <LoginButton />
+                </Col>
+              </Row>
               <div className="fs-1 mt-4 text-center text-primary">
                 Congratulations, {ctx.currentUser.name}
               </div>
@@ -345,8 +331,11 @@ function Login() {
             </>
           ) : (
             <>
-              <div className="text-end text-uppercase me-5">
-                {ctx.currentUser.name}
+              <div className="text-end me-5">
+                {ctx.currentUser.name} |{" "}
+                <small className="">
+                  <NavLink to="">Update Profile</NavLink>
+                </small>
               </div>
               <Row>
                 <Col className="text-end me-5">
@@ -362,14 +351,25 @@ function Login() {
                     <LoginUser user={ctx.currentUser} />
                     <br />
                     <Row className="text-center">
-                      <Col>
-                        <NavLink to="/deposit" className="btn btn-primary">
-                          Make a deposit
+                      <Col sm={12}>
+                        <NavLink to="/deposit" className="btn btn-primary w-75">
+                          DEPOSIT
                         </NavLink>
                       </Col>
-                      <Col>
-                        <NavLink to="/withdraw" className="btn btn-primary">
-                          Make a withdraw
+                      <Col sm={12} className="my-3">
+                        <NavLink
+                          to="/withdraw"
+                          className="btn btn-primary w-75"
+                        >
+                          WITHDRAW
+                        </NavLink>
+                      </Col>
+                      <Col sm={12}>
+                        <NavLink
+                          to="/transfer"
+                          className="btn btn-primary w-75"
+                        >
+                          TRANSFER
                         </NavLink>
                       </Col>
                     </Row>

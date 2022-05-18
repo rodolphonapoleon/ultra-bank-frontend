@@ -17,17 +17,11 @@ function Deposit() {
   const ctx = useContext(UserContext);
   // console.log(ctx.currentUser);
 
-  // useEffect(() => {
-  onAuthStateChanged(auth, async (user) => {
-    setIdToken(await getIdToken(user));
-    // fetch("http://localhost:3000/account/all")
-    //   .then((response) => response.json())
-    //   .then((data) => {
-    //     const userLoginData = data.filter((item) => item.email == user.email);
-    //     setCurrentUser(userLoginData[0]);
-    //   });
-  });
-  // }, []);
+  useEffect(() => {
+    onAuthStateChanged(auth, async (user) => {
+      if (user) setIdToken(await getIdToken(user));
+    });
+  }, []);
 
   function validate(field) {
     if (Number(field) != field) {
@@ -52,7 +46,7 @@ function Deposit() {
     // console.log("idtoken:", idToken);
     (async () => {
       await fetch(
-        `http://localhost:3000/account/update/${ctx.currentUser.email}/${amount}`,
+        `http://${process.env.REACT_APP_SERVER_URL}/account/update/${ctx.currentUser.email}/${amount}`,
         {
           method: "GET",
           headers: {
@@ -61,10 +55,6 @@ function Deposit() {
         }
       );
     })();
-
-    // fetch(
-    //   `http://localhost:3000/account/update/${currentUser.email}/${amount}`
-    // );
     setShow(false);
   }
 

@@ -4,9 +4,14 @@ import { NavLink } from "react-router-dom";
 import { auth } from "../firebase-config";
 import { onAuthStateChanged } from "firebase/auth";
 
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 function LoginButton() {
   const [userLogin, setUserLogin] = useState(false);
   const ctx = useContext(UserContext);
+
+  const notify = () => toast.info("You have successfully logout");
 
   onAuthStateChanged(auth, (user) => {
     if (user) {
@@ -28,6 +33,7 @@ function LoginButton() {
         to="/logout"
         onClick={() => {
           handleLogout();
+          notify();
         }}
         className="btn btn-primary rounded ms-4"
       >

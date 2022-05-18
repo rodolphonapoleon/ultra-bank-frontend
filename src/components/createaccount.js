@@ -8,7 +8,6 @@ import { Row, Col } from "react-bootstrap";
 import { auth } from "../firebase-config";
 import {
   createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
   GoogleAuthProvider,
   signInWithPopup,
   onAuthStateChanged,
@@ -30,22 +29,23 @@ const LoginUser = ({ user }) => {
 
 function CreateAccount() {
   const [show, setShow] = useState(true);
-  const [status, setStatus] = useState("");
+  // const [status, setStatus] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isDisabled, setIsdisabled] = useState(true);
   const [googleUserExist, setGoogleUserExist] = useState(false);
   const [userLogin, setUserLogin] = useState(false);
+  const [checked, setChecked] = useState(false);
   const ctx = useContext(UserContext);
 
   const [data, setData] = useState([]);
   useEffect(async () => {
     // fetch all accounts from API
-    await fetch("http://localhost:3000/account/all")
+    await fetch(`http://${process.env.REACT_APP_SERVER_URL}/account/all`)
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
+        // console.log(data);
         setData(data);
       });
   }, []);
@@ -103,40 +103,45 @@ function CreateAccount() {
       ctx.login = false;
       return;
     }
-    console.log(name, email, password);
+    if (checked == false) {
+      alert("You have to accept the Terms of Use and Privacy Policy ");
+      return;
+    }
+
+    // console.log(name, email, password);
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         // Signed in
         const user = userCredential.user;
-        console.log(user);
-        // ...
+        // console.log(user);
+        // handleLogin();
+        ctx.currentUser = {
+          name: name,
+          email: email,
+          balance: 0,
+        };
+        ctx.userLogin = true;
+        // createAccount();
+        const url = `http://${process.env.REACT_APP_SERVER_URL}/account/create/${ctx.currentUser.name}/${ctx.currentUser.email}`;
+        (async () => {
+          var res = await fetch(url);
+          var data = await res.json();
+          // console.log(data);
+        })();
+        setShow(false);
+        ctx.login = true;
       })
       .catch((error) => {
         console.log(error.message);
-        // const errorCode = error.code;
-        // const errorMessage = error.message;
-        // ..
+        if (error.code == "auth/email-already-in-use") {
+          alert(
+            "Sorry. An account is already associated to this email address"
+          );
+        } else {
+          alert(error.message);
+        }
+        clearForm();
       });
-    const url = `http://localhost:3000/account/create/${name}/${email}`;
-    (async () => {
-      var res = await fetch(url);
-      var data = await res.json();
-      console.log(data);
-    })();
-    setShow(false);
-    ctx.login = true;
-  }
-
-  function handleLogin() {
-    if (ctx.login) {
-      signInWithEmailAndPassword(auth, email, password);
-      ctx.currentUser = {
-        name: name,
-        email: email,
-        balance: 0,
-      };
-      ctx.userLogin = true;
-    } else return;
   }
 
   function handleLoginwithgoogle() {
@@ -149,13 +154,13 @@ function CreateAccount() {
         // The signed-in user info.
         const user = result.user;
         const userLoginData = data.filter((item) => item.email == user.email);
-        console.log(userLoginData);
+        // console.log(userLoginData);
         if (userLoginData.length == 0) {
-          const url = `http://localhost:3000/account/create/${user.displayName}/${user.email}`;
+          const url = `http://${process.env.REACT_APP_SERVER_URL}/account/create/${user.displayName}/${user.email}`;
           (async () => {
             var res = await fetch(url);
             var data = await res.json();
-            console.log(data);
+            // console.log(data);
           })();
 
           ctx.currentUser = {
@@ -186,8 +191,10 @@ function CreateAccount() {
   }
 
   function clearForm() {
+    setName("");
     setEmail("");
     setPassword("");
+    setChecked(false);
   }
 
   return (
@@ -221,10 +228,6 @@ function CreateAccount() {
                         <br />
                         Get premium services:
                       </h2>
-                      {/* <li>Bank anytime, anywhere</li>
-            <li>Transfer and send money</li>
-            <li>Deposit checks from your mobile device</li>
-            <li>Bank securely with the latest technology</li> */}
                       <ul className="list-unstyled mb-4 mb-sm-5">
                         <li className="d-flex mb-2">
                           <i className="bi-check-circle text-primary me-2"></i>
@@ -290,9 +293,6 @@ function CreateAccount() {
                           <img
                             alt="Illusration"
                             src="http://finder-react.createx.studio/images/signin-modal/signup.svg"
-                            // decoding="async"
-                            // data-nimg="intrinsic"
-                            // srcset="/images/signin-modal/signin.svg 1x, /images/signin-modal/signin.svg 2x"
                             style={{
                               position: "absolute",
                               inset: "0px",
@@ -402,6 +402,9 @@ function CreateAccount() {
                           type="checkbox"
                           id="terms-agree"
                           className="form-check-input"
+                          onChange={(e) => {
+                            setChecked(e.target.checked);
+                          }}
                         />
                         <label
                           title=""
@@ -420,7 +423,7 @@ function CreateAccount() {
                         className="btn btn-primary w-100 btn-lg"
                         onClick={() => {
                           handleCreate();
-                          handleLogin();
+                          // handleLogin();
                         }}
                       >
                         Sign Up
@@ -446,7 +449,7 @@ function CreateAccount() {
                   <Card
                     style={{ maxWidth: "25rem", marginTop: "4rem" }}
                     bgcolor="dark"
-                    status={status}
+                    // status={status}
                     body={
                       <>
                         <LoginUser user={ctx.currentUser} />
@@ -476,7 +479,7 @@ function CreateAccount() {
                     style={{ maxWidth: "25rem", marginTop: "3rem" }}
                     bgcolor="dark"
                     header="Create Account"
-                    status={status}
+                    // status={status}
                     body={
                       <>
                         <h5 className="fs-2">Success</h5>

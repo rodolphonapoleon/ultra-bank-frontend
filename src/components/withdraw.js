@@ -15,17 +15,11 @@ function Withdraw() {
   // const [currentUser, setCurrentUser] = useState({});
   const [idToken, setIdToken] = useState("");
 
-  // useEffect(() => {
-  onAuthStateChanged(auth, async (user) => {
-    setIdToken(await getIdToken(user));
-    // fetch("http://localhost:3000/account/all")
-    //   .then((response) => response.json())
-    //   .then((data) => {
-    //     const userLoginData = data.filter((item) => item.email == user.email);
-    //     setCurrentUser(userLoginData[0]);
-    //   });
-  });
-  // }, []);
+  useEffect(() => {
+    onAuthStateChanged(auth, async (user) => {
+      if (user) setIdToken(await getIdToken(user));
+    });
+  }, []);
 
   function validate(field) {
     if (Number(field) != field) {
@@ -50,14 +44,14 @@ function Withdraw() {
   }
 
   function handleWithdraw() {
-    console.log(amount);
+    // console.log(amount);
     if (!validate(amount, "amount")) return;
     // ctx.users[0].balance -= parseInt(amount);
     ctx.currentUser.balance -= parseInt(amount);
 
     (async () => {
       await fetch(
-        `http://localhost:3000/account/update/${ctx.currentUser.email}/-${amount}`,
+        `http://${process.env.REACT_APP_SERVER_URL}/account/update/${ctx.currentUser.email}/-${amount}`,
         {
           method: "GET",
           headers: {
@@ -66,9 +60,6 @@ function Withdraw() {
         }
       );
     })();
-    // fetch(
-    //   `http://localhost:3000/account/update/${ctx.currentUser.email}/-${amount}`
-    // );
     setShow(false);
   }
 

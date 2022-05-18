@@ -22,6 +22,7 @@ function Home() {
       ) : (
         ""
       )}
+
       <Row>
         <Col className="text-end me-5">
           <LoginButton />
