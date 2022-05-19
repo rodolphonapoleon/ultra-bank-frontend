@@ -24,7 +24,8 @@ function LoginButton() {
   const handleLogout = () => {
     auth.signOut();
     ctx.currentUser = null;
-    ctx.userLogin = false;
+    // ctx.userLogin = false;
+    window.sessionStorage.setItem("CONTEXT_APP", JSON.stringify(ctx));
   };
 
   return userLogin ? (

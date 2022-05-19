@@ -3,7 +3,7 @@ import banner from "../bank.png";
 import belfoto from "../belpic.jpg";
 import { Image, Row, Col, Container } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { UserContext } from "../context";
 import LoginButton from "./loginbutton";
 import pic1 from "../pic1.jpg";
@@ -12,12 +12,29 @@ import pic3 from "../pic3.jpg";
 import "@lottiefiles/lottie-player";
 
 function Home() {
-  const ctx = useContext(UserContext);
+  let ctx = useContext(UserContext);
+  // console.log(ctx);
+  // console.log("user", ctx.currentUser);
+
+  // useEffect(() => {
+  //   const data = window.localStorage.getItem("CONTEXT_HOME");
+  //   console.log("data", data);
+  //   if (data != null) ctx = data;
+  // }, []);
+
+  // useEffect(() => {
+  //   window.localStorage.setItem("CONTEXT_HOME", JSON.stringify(ctx));
+  //   console.log("CTX", ctx);
+  // }, [ctx]);
+
   return (
     <>
       {ctx.currentUser ? (
-        <div className="text-end text-uppercase me-5">
-          {ctx.currentUser.name}
+        <div className="text-end me-5 mb-1">
+          <span className="text-uppercase">{ctx.currentUser.name}</span> |{" "}
+          <small className="">
+            <Link to="">Update Profile</Link>
+          </small>
         </div>
       ) : (
         ""

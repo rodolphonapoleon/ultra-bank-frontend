@@ -2,13 +2,15 @@ import { useState, useContext, useEffect } from "react";
 import Card from "../context";
 import { UserContext } from "../context";
 import { NavLink, Link } from "react-router-dom";
-import { Row, Col, ToastContainer } from "react-bootstrap";
+import { Row, Col } from "react-bootstrap";
 import LoginButton from "./loginbutton";
 import { auth } from "../firebase-config";
 import {
   signInWithEmailAndPassword,
   GoogleAuthProvider,
   signInWithPopup,
+  setPersistence,
+  browserSessionPersistence,
 } from "@firebase/auth";
 
 const LoginUser = ({ user }) => {
@@ -31,8 +33,6 @@ function Login() {
   const [password, setPassword] = useState("");
   const [isDisabled, setIsdisabled] = useState(true);
   const [googleUser, setGoogleUser] = useState(false);
-  // const [userLogin, setUserLogin] = useState(false);
-  const [currentUser, setCurrentUser] = useState(null);
   const ctx = useContext(UserContext);
 
   const [data, setData] = useState([]);
@@ -47,71 +47,89 @@ function Login() {
   }, []);
 
   function handleLogin() {
-    signInWithEmailAndPassword(auth, email, password)
-      .then((res) => {
-        // console.log(res.user);
-        const user = res.user;
-        const userLoginData = data.filter((item) => item.email == user.email);
-        // setCurrentUser(userLoginData[0]);
-        ctx.currentUser = userLoginData[0];
-        setShow(false);
-        // ctx.log = true;
-        // console.log(ctx.currentUser);
-      })
-      .catch((error) => {
-        alert("email or password is incorrect");
-        clearForm();
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.log(errorCode);
-      });
-    // }
-  }
+    setPersistence(auth, browserSessionPersistence)
+      .then(() => {
+        return signInWithEmailAndPassword(auth, email, password)
+          .then((res) => {
+            // console.log(res.user);
+            const user = res.user;
+            const userLoginData = data.filter(
+              (item) => item.email == user.email
+            );
+            // setCurrentUser(userLoginData[0]);
 
-  function handleLoginwithgoogle() {
-    const provider = new GoogleAuthProvider();
-    signInWithPopup(auth, provider)
-      .then((result) => {
-        // This gives you a Google Access Token. You can use it to access the Google API.
-        const credential = GoogleAuthProvider.credentialFromResult(result);
-        const token = credential.accessToken;
-        // The signed-in user info.
-        const user = result.user;
-        const userLoginData = data.filter((item) => item.email == user.email);
-        // console.log(userLoginData);
-        if (userLoginData.length == 0) {
-          const url = `http://${process.env.REACT_APP_SERVER_URL}/account/create/${user.displayName}/${user.email}`;
-          (async () => {
-            var res = await fetch(url);
-            var data = await res.json();
-            console.log(data);
-          })();
-
-          ctx.currentUser = {
-            name: user.displayName,
-            email: user.email,
-            balance: 0,
-          };
-          setShow(false);
-          setGoogleUser(true);
-        }
-        if (userLoginData.length != 0) {
-          ctx.currentUser = userLoginData[0];
-          setShow(false);
-        }
-        // ...
+            ctx.currentUser = userLoginData[0];
+            setShow(false);
+            // ctx.log = true;
+            // console.log(ctx.currentUser);
+            window.sessionStorage.setItem("CONTEXT_APP", JSON.stringify(ctx));
+          })
+          .catch((error) => {
+            alert("email or password is incorrect");
+            clearForm();
+            const errorCode = error.code;
+            console.log(errorCode);
+          });
       })
       .catch((error) => {
         // Handle Errors here.
         const errorCode = error.code;
-        const errorMessage = error.message;
-        // The email of the user's account used.
-        const email = error.email;
-        // The AuthCredential type that was used.
-        const credential = GoogleAuthProvider.credentialFromError(error);
-        // ...
       });
-    ctx.userLogin = true;
+  }
+
+  function handleLoginwithgoogle() {
+    const provider = new GoogleAuthProvider();
+    setPersistence(auth, browserSessionPersistence)
+      .then(() => {
+        return signInWithPopup(auth, provider)
+          .then((result) => {
+            // This gives you a Google Access Token. You can use it to access the Google API.
+            const credential = GoogleAuthProvider.credentialFromResult(result);
+            const token = credential.accessToken;
+            // The signed-in user info.
+            const user = result.user;
+            const userLoginData = data.filter(
+              (item) => item.email == user.email
+            );
+            // console.log(userLoginData);
+            if (userLoginData.length == 0) {
+              const url = `http://${process.env.REACT_APP_SERVER_URL}/account/create/${user.displayName}/${user.email}`;
+              (async () => {
+                var res = await fetch(url);
+                var data = await res.json();
+                // console.log(data);
+              })();
+
+              ctx.currentUser = {
+                name: user.displayName,
+                email: user.email,
+                balance: 0,
+              };
+              setShow(false);
+              setGoogleUser(true);
+            }
+            if (userLoginData.length != 0) {
+              ctx.currentUser = userLoginData[0];
+              setShow(false);
+            }
+            // ...
+            window.sessionStorage.setItem("CONTEXT_APP", JSON.stringify(ctx));
+          })
+          .catch((error) => {
+            // Handle Errors here.
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            // The email of the user's account used.
+            const email = error.email;
+            // The AuthCredential type that was used.
+            const credential = GoogleAuthProvider.credentialFromError(error);
+            // ...
+          });
+      })
+      .catch((error) => {
+        // Handle Errors here.
+        const errorCode = error.code;
+      });
   }
 
   function clearForm() {
@@ -120,9 +138,11 @@ function Login() {
     setIsdisabled(true);
     setShow(true);
   }
+
+  // console.log(show);
   return (
     <>
-      {show ? (
+      {ctx.currentUser == null ? (
         <>
           <div className="container-fluid d-flex h-100 align-items-center justify-content-center py-4 py-sm-5">
             <div className="card card-body" style={{ maxWidth: "940px" }}>
@@ -202,8 +222,8 @@ function Login() {
                           minHeight: "100%",
                           maxHeight: "100%",
                         }}
+                        // className="illustration-image"
                       />
-                      <noscript></noscript>
                     </span>
                   </div>
                   <div className="mt-4 mt-sm-5">
@@ -299,8 +319,8 @@ function Login() {
         <>
           {googleUser ? (
             <>
-              <div className="text-end me-5">
-                {ctx.currentUser.name} |{" "}
+              <div className="text-end me-5 mb-1">
+                <span className="text-uppercase">{ctx.currentUser.name}</span> |{" "}
                 <small className="">
                   <NavLink to="">Update Profile</NavLink>
                 </small>
@@ -331,8 +351,8 @@ function Login() {
             </>
           ) : (
             <>
-              <div className="text-end me-5">
-                {ctx.currentUser.name} |{" "}
+              <div className="text-end me-5 mb-1">
+                <span className="text-uppercase">{ctx.currentUser.name}</span> |{" "}
                 <small className="">
                   <NavLink to="">Update Profile</NavLink>
                 </small>
@@ -364,7 +384,7 @@ function Login() {
                           WITHDRAW
                         </NavLink>
                       </Col>
-                      <Col sm={12}>
+                      <Col sm={12} className="mb-5">
                         <NavLink
                           to="/transfer"
                           className="btn btn-primary w-75"

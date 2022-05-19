@@ -11,18 +11,21 @@ import Logout from "./components/logout";
 import { UserContext } from "./context.js";
 import Footer from "./components/footer";
 import Transfer from "./components/transfer.js";
+import { useState, useEffect } from "react";
 
 function App() {
+  // const [context, setContext] = useState({
+  //   currentUser: null,
+  // });
+  const [context, setContext] = useState(() => {
+    const localData = window.sessionStorage.getItem("CONTEXT_APP");
+    return localData ? JSON.parse(localData) : { currentUser: null };
+  });
+
   return (
     <>
       <BrowserRouter>
-        <UserContext.Provider
-          value={{
-            currentUser: null,
-            userLogin: false,
-            login: false,
-          }}
-        >
+        <UserContext.Provider value={context}>
           <div
             style={{
               backgroundColor: "#F0F8FF",

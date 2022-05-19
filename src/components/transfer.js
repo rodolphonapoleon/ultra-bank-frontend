@@ -5,6 +5,7 @@ import { Row, Col } from "react-bootstrap";
 import { auth } from "../firebase-config";
 import { onAuthStateChanged, getIdToken } from "firebase/auth";
 import { UserContext } from "../context";
+import { NavLink } from "react-router-dom";
 
 function Transfer() {
   const [show, setShow] = useState(true);
@@ -73,6 +74,7 @@ function Transfer() {
       return;
     }
     ctx.currentUser.balance -= parseInt(amount);
+    window.sessionStorage.setItem("CONTEXT_APP", JSON.stringify({ ...ctx }));
     // console.log("idtoken:", idToken);
     (async () => {
       await fetch(
@@ -108,7 +110,12 @@ function Transfer() {
 
   return (
     <>
-      <div className="text-end text-uppercase me-5">{ctx.currentUser.name}</div>
+      <div className="text-end me-5 mb-1">
+        <span className="text-uppercase">{ctx.currentUser.name}</span> |{" "}
+        <small className="">
+          <NavLink to="">Update Profile</NavLink>
+        </small>
+      </div>
       <Row>
         <Col className="text-end me-5">
           <LoginButton />
