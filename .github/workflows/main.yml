@@ -32,12 +32,12 @@
 #           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 #           AWS_REGION: "us-east-1" # optional: defaults to us-east-1
 
-name: s3-depl
+# name: s3-depl
 
-on:
-  push:
-    # branches:
-    #   - master
+# on:
+#   push:
+# branches:
+#   - master
 # jobs:
 #   build:
 #     runs-on: ubuntu-latest

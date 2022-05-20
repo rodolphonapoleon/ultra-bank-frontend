@@ -4,6 +4,7 @@ import { UserContext } from "../context";
 import { NavLink, Link } from "react-router-dom";
 import { Row, Col } from "react-bootstrap";
 import LoginButton from "./loginbutton";
+import googlePic from "../pngegg.png";
 import { auth } from "../firebase-config";
 import {
   signInWithEmailAndPassword,
@@ -237,8 +238,8 @@ function Login() {
                     className="btn btn-outline-info w-100 mb-3 fw-bold"
                     onClick={handleLoginwithgoogle}
                   >
-                    <i className="bi bi-google fs-lg me-1"></i>Sign in with
-                    Google
+                    <img src={googlePic} style={{ height: "25px" }} /> Sign in
+                    with Google
                   </button>
                   {/* <button type="button" className="btn btn-outline-info w-100 mb-3">
                 <i className="bi bi-facebook fs-lg me-1"></i>Sign in with
@@ -261,7 +262,7 @@ function Login() {
                       className="form-control"
                       value={email}
                       onChange={(e) => {
-                        setEmail(e.currentTarget.value);
+                        setEmail(e.currentTarget.value.toLowerCase());
                         setIsdisabled(false);
                         if (!e.currentTarget.value) setIsdisabled(true);
                       }}
@@ -322,7 +323,7 @@ function Login() {
               <div className="text-end me-5 mb-1">
                 <span className="text-uppercase">{ctx.currentUser.name}</span> |{" "}
                 <small className="">
-                  <NavLink to="">Update Profile</NavLink>
+                  <NavLink to="/profile">Update Profile</NavLink>
                 </small>
               </div>
               <Row>
@@ -354,7 +355,7 @@ function Login() {
               <div className="text-end me-5 mb-1">
                 <span className="text-uppercase">{ctx.currentUser.name}</span> |{" "}
                 <small className="">
-                  <NavLink to="">Update Profile</NavLink>
+                  <NavLink to="/profile">Update Profile</NavLink>
                 </small>
               </div>
               <Row>

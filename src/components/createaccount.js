@@ -5,6 +5,7 @@ import { UserContext } from "../context";
 import { NavLink, Link } from "react-router-dom";
 import LoginButton from "./loginbutton";
 import { Row, Col } from "react-bootstrap";
+import googlePic from "../pngegg.png";
 import { auth } from "../firebase-config";
 import {
   createUserWithEmailAndPassword,
@@ -88,15 +89,15 @@ function CreateAccount() {
 
   function handleCreate() {
     if (!validate(name, "Name")) {
-      ctx.login = false;
+      // ctx.login = false;
       return;
     }
     if (!validate(email, "Email")) {
-      ctx.login = false;
+      // ctx.login = false;
       return;
     }
     if (!validate(password, "Password")) {
-      ctx.login = false;
+      // ctx.login = false;
       return;
     }
     if (checked == false) {
@@ -127,7 +128,7 @@ function CreateAccount() {
               // console.log(data);
             })();
             setShow(false);
-            ctx.login = true;
+            // ctx.login = true;
           })
           .catch((error) => {
             console.log(error.message);
@@ -316,11 +317,11 @@ function CreateAccount() {
                 <div className="col-md-6 px-2 pt-2 pb-4 px-sm-5 pb-sm-5 pt-md-5">
                   <button
                     type="button"
-                    className="btn btn-outline-info w-100 mb-3"
+                    className="btn btn-outline-info w-100 mb-3 fw-bold"
                     onClick={handleLoginwithgoogle}
                   >
-                    <i className="bi bi-google fs-lg me-1"></i>Sign in with
-                    Google
+                    <img src={googlePic} style={{ height: "25px" }} /> Sign in
+                    with Google
                   </button>
                   {/* <button type="button" className="btn btn-outline-info w-100 mb-3">
                 <i className="bi bi-facebook fs-lg me-1"></i>Sign in with
@@ -362,7 +363,7 @@ function CreateAccount() {
                       className="form-control"
                       value={email}
                       onChange={(e) => {
-                        setEmail(e.currentTarget.value);
+                        setEmail(e.currentTarget.value.toLowerCase());
                         setIsdisabled(false);
                         if (!e.currentTarget.value) setIsdisabled(true);
                       }}
@@ -434,7 +435,7 @@ function CreateAccount() {
               <div className="text-end me-5 mb-1">
                 <span className="text-uppercase">{ctx.currentUser.name}</span> |{" "}
                 <small className="">
-                  <NavLink to="">Update Profile</NavLink>
+                  <NavLink to="/profile">Update Profile</NavLink>
                 </small>
               </div>
               <Row>
@@ -471,7 +472,7 @@ function CreateAccount() {
               <div className="text-end me-5 mb-1">
                 <span className="text-uppercase">{ctx.currentUser.name}</span> |{" "}
                 <small className="">
-                  <NavLink to="">Update Profile</NavLink>
+                  <NavLink to="/profile">Update Profile</NavLink>
                 </small>
               </div>
               <Row>

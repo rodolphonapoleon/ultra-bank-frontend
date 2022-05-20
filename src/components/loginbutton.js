@@ -11,7 +11,7 @@ function LoginButton() {
   const [userLogin, setUserLogin] = useState(false);
   const ctx = useContext(UserContext);
 
-  const notify = () => toast.info("You have successfully logout");
+  const notify = () => toast.success("You have successfully logout");
 
   onAuthStateChanged(auth, (user) => {
     if (user) {

@@ -113,7 +113,7 @@ function Transfer() {
       <div className="text-end me-5 mb-1">
         <span className="text-uppercase">{ctx.currentUser.name}</span> |{" "}
         <small className="">
-          <NavLink to="">Update Profile</NavLink>
+          <NavLink to="/profile">Update Profile</NavLink>
         </small>
       </div>
       <Row>

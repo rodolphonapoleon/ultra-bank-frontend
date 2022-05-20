@@ -12,6 +12,7 @@ import { UserContext } from "./context.js";
 import Footer from "./components/footer";
 import Transfer from "./components/transfer.js";
 import { useState, useEffect } from "react";
+import Profile from "./components/profile.js";
 
 function App() {
   // const [context, setContext] = useState({
@@ -46,11 +47,12 @@ function App() {
                 <Route path="/withdraw/" element={<Withdraw />} />
                 <Route path="/alldata/" element={<AllData />} />
                 <Route path="/login/" element={<Login />} />
-                <Route path="/logout/" element={<Logout />} />
+                <Route path="/logout" element={<Logout />} />
                 <Route path="/transfer/" element={<Transfer />} />
+                <Route path="/profile/" element={<Profile />} />
               </Routes>
             </div>
-            <div className="row bg-primary">
+            {/* <div className="row bg-primary">
               <div
                 className="col"
                 style={{
@@ -58,7 +60,7 @@ function App() {
                   height: "6px",
                 }}
               ></div>
-            </div>
+            </div> */}
             <Footer />
           </div>
         </UserContext.Provider>

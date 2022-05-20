@@ -1,9 +1,10 @@
 import { UserContext } from "../context";
 import LoginButton from "./loginbutton";
 import { useContext } from "react";
-import { Row, Col } from "react-bootstrap";
+import { Row, Col, Container } from "react-bootstrap";
 import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import imageLogout from "../ULTRABANK.png";
+import { Link } from "react-router-dom";
 
 function Logout() {
   // const ctx = useContext(UserContext);
@@ -15,7 +16,20 @@ function Logout() {
           <LoginButton />
         </Col>
       </Row>
-      <h1>You have succesfully logout</h1>
+      <Container className="px-md-5">
+        <div className="my-3">
+          <span className="">
+            Thanks for choosing Ultra Bank. We look forward to serving you again
+            soon.
+          </span>{" "}
+          <Link to="/">Go to Home</Link>
+        </div>
+        <div>
+          {" "}
+          <img className="img-fluid" src={imageLogout} />
+        </div>
+      </Container>
+
       <ToastContainer />
     </>
   );

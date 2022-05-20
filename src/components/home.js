@@ -13,19 +13,6 @@ import "@lottiefiles/lottie-player";
 
 function Home() {
   let ctx = useContext(UserContext);
-  // console.log(ctx);
-  // console.log("user", ctx.currentUser);
-
-  // useEffect(() => {
-  //   const data = window.localStorage.getItem("CONTEXT_HOME");
-  //   console.log("data", data);
-  //   if (data != null) ctx = data;
-  // }, []);
-
-  // useEffect(() => {
-  //   window.localStorage.setItem("CONTEXT_HOME", JSON.stringify(ctx));
-  //   console.log("CTX", ctx);
-  // }, [ctx]);
 
   return (
     <>
@@ -33,7 +20,7 @@ function Home() {
         <div className="text-end me-5 mb-1">
           <span className="text-uppercase">{ctx.currentUser.name}</span> |{" "}
           <small className="">
-            <Link to="">Update Profile</Link>
+            <Link to="/profile">Update Profile</Link>
           </small>
         </div>
       ) : (
@@ -70,7 +57,7 @@ function Home() {
           A bank that lets you start saving online
         </h5>
         <div className="card-body my-4">
-          {ctx.userLogin ? (
+          {ctx.currentUser != null ? (
             <h5 className="card-title fs-4">Best choice ever</h5>
           ) : (
             <h5 className="card-title fs-4">Choose smarter</h5>
@@ -81,7 +68,7 @@ function Home() {
             found people have saved, on average, 2x more when they’ve used our
             smart savings tools.
           </p>
-          {ctx.userLogin ? (
+          {ctx.currentUser != null ? (
             ""
           ) : (
             <Link
@@ -102,6 +89,56 @@ function Home() {
           }}
         ></div>
       </div>
+      {/* <div
+        id="carouselExampleSlidesOnly"
+        className="carousel slide"
+        data-bs-ride="carousel"
+      >
+        <div className="carousel-inner">
+          <div className="carousel-item active ps-4">
+            <Row className="">
+              <Col sm={4}>
+                {" "}
+                <img src={pic1} className="d-block w-100" alt="" />
+              </Col>
+              <Col sm={4}>
+                <img src={pic2} className="d-block w-100" alt="" />
+              </Col>
+              <Col sm={4}>
+                <img src={pic3} className="d-block w-100" alt="" />
+              </Col>
+            </Row>
+          </div>
+          <div className="carousel-item ps-4">
+            <Row className="">
+              <Col sm={4}>
+                {" "}
+                <img src={pic1} className="d-block w-100" alt="" />
+              </Col>
+              <Col sm={4}>
+                <img src={pic2} className="d-block w-100" alt="" />
+              </Col>
+              <Col sm={4}>
+                <img src={pic3} className="d-block w-100" alt="" />
+              </Col>
+            </Row>
+          </div>
+          <div className="carousel-item ps-4">
+            <Row className="">
+              <Col sm={4}>
+                {" "}
+                <img src={pic1} className="d-block w-100" alt="" />
+              </Col>
+              <Col sm={4}>
+                <img src={pic2} className="d-block w-100" alt="" />
+              </Col>
+              <Col sm={4}>
+                <img src={pic3} className="d-block w-100" alt="" />
+              </Col>
+            </Row>
+          </div>
+        </div>
+      </div> */}
       {/* <div className="text-center fs-2 mt-5 mb-0">Benefits and features</div> */}
       <div
         className="row"
@@ -115,22 +152,34 @@ function Home() {
               src="https://assets7.lottiefiles.com/packages/lf20_km8fo9bv.json"
               background="transparent"
               speed="1"
-              style={{ width: "500px", height: "500px" }}
+              style={{ width: "400px", height: "400px" }}
               loop
               autoplay
             ></lottie-player>
           </div>
         </div>
-        <div className="col-lg-6 align-self-center">
-          <ul className="fs-3">
-            <li>Bank anytime, anywhere</li>
-            <li>Transfer and send money</li>
-            <li>Deposit checks from your mobile device</li>
-            <li>Bank securely with the latest technology</li>
+        <div className="col-lg-6 align-self-center mb-4">
+          <ul className="list-unstyled h4 ms-5">
+            <li className="mb-2">
+              <i className="bi-check-circle text-primary me-2"></i>Bank anytime,
+              anywhere
+            </li>
+            <li className="mb-2">
+              <i className="bi-check-circle text-primary me-2"></i>Transfer and
+              send money
+            </li>
+            <li className="mb-2">
+              <i className="bi-check-circle text-primary me-2"></i>Deposit
+              checks from your mobile device
+            </li>
+            <li>
+              <i className="bi-check-circle text-primary me-2"></i>Bank securely
+              with the latest technology
+            </li>
           </ul>
         </div>
       </div>
-      <div className="row bg-primary">
+      {/* <div className="row bg-primary">
         <div
           className="col"
           style={{
@@ -138,7 +187,7 @@ function Home() {
             height: "6px",
           }}
         ></div>
-      </div>
+      </div> */}
 
       <div className="col text-center fs-2 mt-5">
         Online banking is changing the industry
@@ -257,57 +306,6 @@ function Home() {
           </div>
         </div>
       </div>
-
-      {/* <div
-        id="carouselExampleSlidesOnly"
-        class="carousel slide"
-        data-bs-ride="carousel"
-      >
-        <div class="carousel-inner">
-          <div class="carousel-item active ps-4">
-            <Row class="">
-              <Col sm={4}>
-                {" "}
-                <img src={pic1} class="d-block w-100" alt="" />
-              </Col>
-              <Col sm={4}>
-                <img src={pic2} class="d-block w-100" alt="" />
-              </Col>
-              <Col sm={4}>
-                <img src={pic3} class="d-block w-100" alt="" />
-              </Col>
-            </Row>
-          </div>
-          <div class="carousel-item ps-4">
-            <Row class="">
-              <Col sm={4}>
-                {" "}
-                <img src={pic1} class="d-block w-100" alt="" />
-              </Col>
-              <Col sm={4}>
-                <img src={pic2} class="d-block w-100" alt="" />
-              </Col>
-              <Col sm={4}>
-                <img src={pic3} class="d-block w-100" alt="" />
-              </Col>
-            </Row>
-          </div>
-          <div class="carousel-item ps-4">
-            <Row class="">
-              <Col sm={4}>
-                {" "}
-                <img src={pic1} class="d-block w-100" alt="" />
-              </Col>
-              <Col sm={4}>
-                <img src={pic2} class="d-block w-100" alt="" />
-              </Col>
-              <Col sm={4}>
-                <img src={pic3} class="d-block w-100" alt="" />
-              </Col>
-            </Row>
-          </div>
-        </div>
-      </div> */}
     </>
   );
 }
