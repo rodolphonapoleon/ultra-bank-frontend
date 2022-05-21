@@ -43,8 +43,8 @@ name: s3-depl
 
 on:
   push:
-branches:
-  - master
+# branches:
+#   - master
 jobs:
   build:
     runs-on: ubuntu-latest
