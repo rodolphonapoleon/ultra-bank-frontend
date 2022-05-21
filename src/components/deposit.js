@@ -43,7 +43,15 @@ function Deposit() {
     if (!validate(amount, "amount")) return;
     ctx.currentUser.balance += parseInt(amount);
     window.sessionStorage.setItem("CONTEXT_APP", JSON.stringify({ ...ctx }));
-    // console.log("idtoken:", idToken);
+
+    const transaction = {
+      email: ctx.currentUser.email,
+      date: new Date(),
+      type: "DEPOSIT",
+      amount: amount,
+      currentBalance: ctx.currentUser.balance,
+    };
+    console.log(new Date());
     (async () => {
       await fetch(
         `http://${process.env.REACT_APP_SERVER_URL}/account/update/${ctx.currentUser.email}/${amount}`,
@@ -55,6 +63,20 @@ function Deposit() {
         }
       );
     })();
+    (async () => {
+      await fetch(
+        `http://${
+          process.env.REACT_APP_SERVER_URL
+        }/account/createtransaction/${JSON.stringify(transaction)}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: idToken,
+          },
+        }
+      );
+    })();
+
     setShow(false);
   }
 

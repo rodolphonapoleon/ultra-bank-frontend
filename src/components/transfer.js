@@ -75,7 +75,14 @@ function Transfer() {
     }
     ctx.currentUser.balance -= parseInt(amount);
     window.sessionStorage.setItem("CONTEXT_APP", JSON.stringify({ ...ctx }));
-    // console.log("idtoken:", idToken);
+    const transaction = {
+      email: ctx.currentUser.email,
+      date: new Date(),
+      type: "TRANSFER",
+      amount: -amount,
+      currentBalance: ctx.currentUser.balance,
+    };
+
     (async () => {
       await fetch(
         `http://${process.env.REACT_APP_SERVER_URL}/account/update/${ctx.currentUser.email}/-${amount}`,
@@ -98,6 +105,20 @@ function Transfer() {
         }
       );
     })();
+    (async () => {
+      await fetch(
+        `http://${
+          process.env.REACT_APP_SERVER_URL
+        }/account/createtransaction/${JSON.stringify(transaction)}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: idToken,
+          },
+        }
+      );
+    })();
+
     setShow(false);
   }
 

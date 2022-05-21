@@ -13,6 +13,7 @@ import Footer from "./components/footer";
 import Transfer from "./components/transfer.js";
 import { useState, useEffect } from "react";
 import Profile from "./components/profile.js";
+import Activity from "./components/activity.js";
 
 function App() {
   // const [context, setContext] = useState({
@@ -50,6 +51,7 @@ function App() {
                 <Route path="/logout" element={<Logout />} />
                 <Route path="/transfer/" element={<Transfer />} />
                 <Route path="/profile/" element={<Profile />} />
+                <Route path="/activity/" element={<Activity />} />
               </Routes>
             </div>
             {/* <div className="row bg-primary">

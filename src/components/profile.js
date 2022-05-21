@@ -30,6 +30,29 @@ function Profile() {
     });
   }, []);
 
+  const range = (a, b) => {
+    const array = [];
+    for (let i = 0; i < b - a; i++) {
+      array[i] = a + i;
+    }
+    return array;
+  };
+  const years = range(1900, new Date().getFullYear() + 1);
+  const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+
   return (
     <>
       <div className="text-end me-5 mb-1">
@@ -143,12 +166,84 @@ function Profile() {
                 </div>
                 <div className="collapse" id="birth-collapse">
                   <DatePicker
-                    dateFormat="yyyy/MM/dd"
+                    // dateFormat="yyyy/MM/dd"
                     className="form-control mt-3"
-                    onChange={(date) => setUser({ ...user, dob: `${date}` })}
-                    showMonthDropdown
-                    showYearDropdown
-                    dropdownMode="select"
+                    renderCustomHeader={({
+                      date,
+                      changeYear,
+                      changeMonth,
+                      decreaseMonth,
+                      increaseMonth,
+                      prevMonthButtonDisabled,
+                      nextMonthButtonDisabled,
+                    }) => (
+                      <div
+                        style={{
+                          margin: 10,
+                          display: "flex",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <button
+                          style={{
+                            color: "white",
+                            backgroundColor: "#ff6700",
+                            border: "none",
+                          }}
+                          onClick={decreaseMonth}
+                          disabled={prevMonthButtonDisabled}
+                        >
+                          {"<"}
+                        </button>
+                        <select
+                          style={{}}
+                          value={date.getFullYear()}
+                          onChange={({ target: { value } }) =>
+                            changeYear(value)
+                          }
+                        >
+                          {years.map((option) => (
+                            <option key={option} value={option}>
+                              {option}
+                            </option>
+                          ))}
+                        </select>
+
+                        <select
+                          style={{}}
+                          value={months[date.getMonth()]}
+                          onChange={({ target: { value } }) =>
+                            changeMonth(months.indexOf(value))
+                          }
+                        >
+                          {months.map((option) => (
+                            <option key={option} value={option}>
+                              {option}
+                            </option>
+                          ))}
+                        </select>
+
+                        <button
+                          style={{
+                            color: "white",
+                            backgroundColor: "#ff6700",
+                            border: "none",
+                          }}
+                          onClick={increaseMonth}
+                          disabled={nextMonthButtonDisabled}
+                        >
+                          {">"}
+                        </button>
+                      </div>
+                    )}
+                    selected={user.date}
+                    onChange={(date) => {
+                      // setStartDate(date);
+                      const usDateFormat = `${
+                        date.getMonth() + 1
+                      }-${date.getDate()}-${date.getFullYear()}`;
+                      setUser({ ...user, dob: usDateFormat });
+                    }}
                   />
                 </div>
               </div>

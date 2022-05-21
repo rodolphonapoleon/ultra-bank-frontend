@@ -44,3 +44,19 @@ code {
 .Toastify__toast-container {
   width: 520px;
 }
+.react-datepicker__header {
+  text-align: center;
+  background-color: #fcbd9b;
+  border-bottom: 1px solid #aeaeae;
+  border-top-left-radius: 0.3rem;
+  padding: 8px 0;
+  position: relative;
+}
+.react-datepicker__day--keyboard-selected,
+.react-datepicker__month-text--keyboard-selected,
+.react-datepicker__quarter-text--keyboard-selected,
+.react-datepicker__year-text--keyboard-selected {
+  border-radius: 0.3rem;
+  background-color: #ff6700;
+  color: #fff;
+}

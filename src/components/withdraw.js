@@ -50,6 +50,13 @@ function Withdraw() {
     // ctx.users[0].balance -= parseInt(amount);
     ctx.currentUser.balance -= parseInt(amount);
     window.sessionStorage.setItem("CONTEXT_APP", JSON.stringify({ ...ctx }));
+    const transaction = {
+      email: ctx.currentUser.email,
+      date: new Date(),
+      type: "WITHDRAW",
+      amount: -amount,
+      currentBalance: ctx.currentUser.balance,
+    };
 
     (async () => {
       await fetch(
@@ -62,6 +69,20 @@ function Withdraw() {
         }
       );
     })();
+    (async () => {
+      await fetch(
+        `http://${
+          process.env.REACT_APP_SERVER_URL
+        }/account/createtransaction/${JSON.stringify(transaction)}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: idToken,
+          },
+        }
+      );
+    })();
+
     setShow(false);
   }
 

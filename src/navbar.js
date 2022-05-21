@@ -103,6 +103,20 @@ function NavBar() {
               ) : (
                 ""
               )}
+              {userLogin ? (
+                <NavLink
+                  to="activity"
+                  className={({ isActive }) =>
+                    isActive
+                      ? "nav-link fs-4 ms-3 active"
+                      : "nav-link fs-4 ms-3"
+                  }
+                >
+                  Activity
+                </NavLink>
+              ) : (
+                ""
+              )}
               {/* <NavLink
                 to="alldata"
                 className={({ isActive }) =>
