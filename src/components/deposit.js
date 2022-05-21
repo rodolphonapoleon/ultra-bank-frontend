@@ -51,7 +51,6 @@ function Deposit() {
       amount: amount,
       currentBalance: ctx.currentUser.balance,
     };
-    console.log(new Date());
     (async () => {
       await fetch(
         `http://${process.env.REACT_APP_SERVER_URL}/account/update/${ctx.currentUser.email}/${amount}`,
