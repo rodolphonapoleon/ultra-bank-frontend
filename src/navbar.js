@@ -8,7 +8,7 @@ function NavBar() {
   const [admin, setAdmin] = useState(false);
   onAuthStateChanged(auth, (user) => {
     if (user) {
-      if (user.uid == "dNcefFtCksNbiBOjEVPc046LYrj1") {
+      if (user.uid == `${process.env.REACT_APP_SUPPORT_UID}`) {
         setAdmin(true);
       }
       setUserLogin(true);
