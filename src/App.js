@@ -14,6 +14,7 @@ import Transfer from "./components/transfer.js";
 import { useState, useEffect } from "react";
 import Profile from "./components/profile.js";
 import Activity from "./components/activity.js";
+import ForgotPassword from "./components/forgotpassword.js";
 
 function App() {
   // const [context, setContext] = useState({
@@ -21,7 +22,9 @@ function App() {
   // });
   const [context, setContext] = useState(() => {
     const localData = window.sessionStorage.getItem("CONTEXT_APP");
-    return localData ? JSON.parse(localData) : { currentUser: null };
+    return localData
+      ? JSON.parse(localData)
+      : { currentUser: null, accountExist: null };
   });
 
   return (
@@ -46,23 +49,16 @@ function App() {
                 <Route path="/CreateAccount/" element={<CreateAccount />} />
                 <Route path="/deposit/" element={<Deposit />} />
                 <Route path="/withdraw/" element={<Withdraw />} />
-                <Route path="/alldata/" element={<AllData />} />
+                <Route path="login/alldata/" element={<AllData />} />
                 <Route path="/login/" element={<Login />} />
                 <Route path="/logout" element={<Logout />} />
                 <Route path="/transfer/" element={<Transfer />} />
                 <Route path="/profile/" element={<Profile />} />
                 <Route path="/activity/" element={<Activity />} />
+                <Route path="/forgotpassword/" element={<ForgotPassword />} />
               </Routes>
             </div>
-            {/* <div className="row bg-primary">
-              <div
-                className="col"
-                style={{
-                  width: "100%",
-                  height: "6px",
-                }}
-              ></div>
-            </div> */}
+
             <Footer />
           </div>
         </UserContext.Provider>

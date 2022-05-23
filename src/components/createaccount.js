@@ -14,6 +14,7 @@ import {
   onAuthStateChanged,
   setPersistence,
   browserSessionPersistence,
+  sendEmailVerification,
 } from "firebase/auth";
 
 const LoginUser = ({ user }) => {
@@ -42,16 +43,16 @@ function CreateAccount() {
   const [checked, setChecked] = useState(false);
   const ctx = useContext(UserContext);
 
-  const [data, setData] = useState([]);
-  useEffect(async () => {
-    // fetch all accounts from API
-    await fetch(`http://${process.env.REACT_APP_SERVER_URL}/account/all`)
-      .then((response) => response.json())
-      .then((data) => {
-        // console.log(data);
-        setData(data);
-      });
-  }, []);
+  // const [data, setData] = useState([]);
+  // useEffect(async () => {
+  //   // fetch all accounts from API
+  //   await fetch(`http://${process.env.REACT_APP_SERVER_URL}/account/all`)
+  //     .then((response) => response.json())
+  //     .then((data) => {
+  //       // console.log(data);
+  //       setData(data);
+  //     });
+  // }, []);
 
   onAuthStateChanged(auth, (user) => {
     if (user) {
@@ -93,7 +94,6 @@ function CreateAccount() {
       return;
     }
     if (!validate(email, "Email")) {
-      // ctx.login = false;
       return;
     }
     if (!validate(password, "Password")) {
@@ -111,8 +111,6 @@ function CreateAccount() {
           .then((userCredential) => {
             // Signed in
             const user = userCredential.user;
-            // console.log(user);
-            // handleLogin();
             ctx.currentUser = {
               name: name,
               email: email,
@@ -159,33 +157,41 @@ function CreateAccount() {
             const token = credential.accessToken;
             // The signed-in user info.
             const user = result.user;
-            const userLoginData = data.filter(
-              (item) => item.email == user.email
-            );
-            // console.log(userLoginData);
-            if (userLoginData.length == 0) {
-              const url = `http://${process.env.REACT_APP_SERVER_URL}/account/create/${user.displayName}/${user.email}`;
-              (async () => {
-                var res = await fetch(url);
-                var data = await res.json();
-                // console.log(data);
-              })();
+            (async () => {
+              // fetch one account
+              await fetch(
+                `http://${process.env.REACT_APP_SERVER_URL}/account/findOne/${user.email}`
+              )
+                .then((response) => response.json())
+                .then((data) => {
+                  ctx.currentUser = data;
+                  setShow(false);
+                  setGoogleUserExist(true);
+                  window.sessionStorage.setItem(
+                    "CONTEXT_APP",
+                    JSON.stringify(ctx)
+                  );
+                })
+                .catch((error) => {
+                  const url = `http://${process.env.REACT_APP_SERVER_URL}/account/create/${user.displayName}/${user.email}`;
+                  (async () => {
+                    var res = await fetch(url);
+                    var datass = await res.json();
+                    // console.log(data);
+                  })();
 
-              ctx.currentUser = {
-                name: user.displayName,
-                email: user.email,
-                balance: 0,
-              };
-              window.sessionStorage.setItem("CONTEXT_APP", JSON.stringify(ctx));
-              setShow(false);
-            }
-            if (userLoginData.length != 0) {
-              ctx.currentUser = userLoginData[0];
-              window.sessionStorage.setItem("CONTEXT_APP", JSON.stringify(ctx));
-              setShow(false);
-              setGoogleUserExist(true);
-            }
-            // ...
+                  ctx.currentUser = {
+                    name: user.displayName,
+                    email: user.email,
+                    balance: 0,
+                  };
+                  setShow(false);
+                  window.sessionStorage.setItem(
+                    "CONTEXT_APP",
+                    JSON.stringify(ctx)
+                  );
+                });
+            })();
           })
           .catch((error) => {
             // Handle Errors here.
@@ -197,13 +203,69 @@ function CreateAccount() {
             const credential = GoogleAuthProvider.credentialFromError(error);
             // ...
           });
-        // ctx.userLogin = true;
       })
       .catch((error) => {
         // Handle Errors here.
         const errorCode = error.code;
       });
   }
+
+  // function handleLoginwithgoogle() {
+  //   const provider = new GoogleAuthProvider();
+  //   setPersistence(auth, browserSessionPersistence)
+  //     .then(() => {
+  //       return signInWithPopup(auth, provider)
+  //         .then((result) => {
+  //           // This gives you a Google Access Token. You can use it to access the Google API.
+  //           const credential = GoogleAuthProvider.credentialFromResult(result);
+  //           const token = credential.accessToken;
+  //           // The signed-in user info.
+  //           const user = result.user;
+  //           const userLoginData = data.filter(
+  //             (item) => item.email == user.email
+  //           );
+  //           // console.log(userLoginData);
+  //           if (userLoginData.length == 0) {
+  //             const url = `http://${process.env.REACT_APP_SERVER_URL}/account/create/${user.displayName}/${user.email}`;
+  //             (async () => {
+  //               var res = await fetch(url);
+  //               var data = await res.json();
+  //               // console.log(data);
+  //             })();
+
+  //             ctx.currentUser = {
+  //               name: user.displayName,
+  //               email: user.email,
+  //               balance: 0,
+  //             };
+  //             window.sessionStorage.setItem("CONTEXT_APP", JSON.stringify(ctx));
+  //             setShow(false);
+  //           }
+  //           if (userLoginData.length != 0) {
+  //             ctx.currentUser = userLoginData[0];
+  //             window.sessionStorage.setItem("CONTEXT_APP", JSON.stringify(ctx));
+  //             setShow(false);
+  //             setGoogleUserExist(true);
+  //           }
+  //           // ...
+  //         })
+  //         .catch((error) => {
+  //           // Handle Errors here.
+  //           const errorCode = error.code;
+  //           const errorMessage = error.message;
+  //           // The email of the user's account used.
+  //           const email = error.email;
+  //           // The AuthCredential type that was used.
+  //           const credential = GoogleAuthProvider.credentialFromError(error);
+  //           // ...
+  //         });
+  //       // ctx.userLogin = true;
+  //     })
+  //     .catch((error) => {
+  //       // Handle Errors here.
+  //       const errorCode = error.code;
+  //     });
+  // }
 
   function clearForm() {
     setName("");
@@ -417,7 +479,6 @@ function CreateAccount() {
                     className="btn btn-primary w-100 btn-lg"
                     onClick={() => {
                       handleCreate();
-                      // handleLogin();
                     }}
                   >
                     Sign Up

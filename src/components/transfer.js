@@ -18,16 +18,16 @@ function Transfer() {
 
   const ctx = useContext(UserContext);
 
-  const [data, setData] = useState([]);
-  useEffect(async () => {
-    // fetch all accounts from API
-    await fetch(`http://${process.env.REACT_APP_SERVER_URL}/account/all`)
-      .then((response) => response.json())
-      .then((data) => {
-        // console.log(data);
-        setData(data);
-      });
-  }, []);
+  // const [data, setData] = useState([]);
+  // useEffect(async () => {
+  //   // fetch all accounts from API
+  //   await fetch(`http://${process.env.REACT_APP_SERVER_URL}/account/all`)
+  //     .then((response) => response.json())
+  //     .then((data) => {
+  //       // console.log(data);
+  //       setData(data);
+  //     });
+  // }, []);
 
   useEffect(() => {
     onAuthStateChanged(auth, async (user) => {
@@ -65,61 +65,131 @@ function Transfer() {
 
       return;
     }
-
-    const userToTransfer = data.filter((item) => item.email == emailToTransfer);
-    // console.log(userToTransfer);
-    if (userToTransfer.length == 0) {
-      alert("There's no account associated to this email");
+    if (emailToTransfer == "support@ultrabank.com") {
       clearForm();
       return;
     }
-    ctx.currentUser.balance -= parseInt(amount);
-    window.sessionStorage.setItem("CONTEXT_APP", JSON.stringify({ ...ctx }));
-    const transaction = {
-      email: ctx.currentUser.email,
-      date: new Date(),
-      type: "TRANSFER",
-      amount: -amount,
-      currentBalance: ctx.currentUser.balance,
-    };
 
     (async () => {
+      // fetch one account
       await fetch(
-        `http://${process.env.REACT_APP_SERVER_URL}/account/update/${ctx.currentUser.email}/-${amount}`,
-        {
-          method: "GET",
-          headers: {
-            Authorization: idToken,
-          },
-        }
-      );
-    })();
-    (async () => {
-      await fetch(
-        `http://${process.env.REACT_APP_SERVER_URL}/account/update/${emailToTransfer}/${amount}`,
-        {
-          method: "GET",
-          headers: {
-            Authorization: idToken,
-          },
-        }
-      );
-    })();
-    (async () => {
-      await fetch(
-        `http://${
-          process.env.REACT_APP_SERVER_URL
-        }/account/createtransaction/${JSON.stringify(transaction)}`,
-        {
-          method: "GET",
-          headers: {
-            Authorization: idToken,
-          },
-        }
-      );
+        `http://${process.env.REACT_APP_SERVER_URL}/account/findOne/${emailToTransfer}`
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          ctx.currentUser.balance -= parseInt(amount);
+          window.sessionStorage.setItem(
+            "CONTEXT_APP",
+            JSON.stringify({ ...ctx })
+          );
+          const transaction = {
+            email: ctx.currentUser.email,
+            date: new Date(),
+            type: "TRANSFER",
+            amount: -amount,
+            currentBalance: ctx.currentUser.balance,
+          };
+
+          (async () => {
+            await fetch(
+              `http://${process.env.REACT_APP_SERVER_URL}/account/update/${ctx.currentUser.email}/-${amount}`,
+              {
+                method: "GET",
+                headers: {
+                  Authorization: idToken,
+                },
+              }
+            );
+          })();
+          (async () => {
+            await fetch(
+              `http://${process.env.REACT_APP_SERVER_URL}/account/update/${emailToTransfer}/${amount}`,
+              {
+                method: "GET",
+                headers: {
+                  Authorization: idToken,
+                },
+              }
+            );
+          })();
+          (async () => {
+            await fetch(
+              `http://${
+                process.env.REACT_APP_SERVER_URL
+              }/account/createtransaction/${JSON.stringify(transaction)}`,
+              {
+                method: "GET",
+                headers: {
+                  Authorization: idToken,
+                },
+              }
+            );
+          })();
+
+          setShow(false);
+        })
+        .catch((error) => {
+          alert("There's no account associated to this email");
+          clearForm();
+        });
     })();
 
-    setShow(false);
+    ///////////////
+
+    // const userToTransfer = data.filter((item) => item.email == emailToTransfer);
+    // // console.log(userToTransfer);
+    // if (userToTransfer.length == 0) {
+    //   alert("There's no account associated to this email");
+    //   clearForm();
+    //   return;
+    // }
+    // ctx.currentUser.balance -= parseInt(amount);
+    // window.sessionStorage.setItem("CONTEXT_APP", JSON.stringify({ ...ctx }));
+    // const transaction = {
+    //   email: ctx.currentUser.email,
+    //   date: new Date(),
+    //   type: "TRANSFER",
+    //   amount: -amount,
+    //   currentBalance: ctx.currentUser.balance,
+    // };
+
+    // (async () => {
+    //   await fetch(
+    //     `http://${process.env.REACT_APP_SERVER_URL}/account/update/${ctx.currentUser.email}/-${amount}`,
+    //     {
+    //       method: "GET",
+    //       headers: {
+    //         Authorization: idToken,
+    //       },
+    //     }
+    //   );
+    // })();
+    // (async () => {
+    //   await fetch(
+    //     `http://${process.env.REACT_APP_SERVER_URL}/account/update/${emailToTransfer}/${amount}`,
+    //     {
+    //       method: "GET",
+    //       headers: {
+    //         Authorization: idToken,
+    //       },
+    //     }
+    //   );
+    // })();
+    // (async () => {
+    //   await fetch(
+    //     `http://${
+    //       process.env.REACT_APP_SERVER_URL
+    //     }/account/createtransaction/${JSON.stringify(transaction)}`,
+    //     {
+    //       method: "GET",
+    //       headers: {
+    //         Authorization: idToken,
+    //       },
+    //     }
+    //   );
+    // })();
+
+    // setShow(false);
   }
 
   function clearForm() {

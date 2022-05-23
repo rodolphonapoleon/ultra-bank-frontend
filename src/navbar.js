@@ -5,11 +5,16 @@ import { onAuthStateChanged } from "firebase/auth";
 
 function NavBar() {
   const [userLogin, setUserLogin] = useState(false);
+  const [admin, setAdmin] = useState(false);
   onAuthStateChanged(auth, (user) => {
     if (user) {
+      if (user.uid == process.env.REACT_APP_SUPPORT_UID) {
+        setAdmin(true);
+      }
       setUserLogin(true);
     } else {
       setUserLogin(false);
+      setAdmin(false);
     }
   });
   return (
@@ -19,9 +24,16 @@ function NavBar() {
         style={{ backgroundColor: "black" }}
       >
         <div className="container-fluid ms-5">
-          <NavLink to="/" className="navbar-brand fs-2 fw-bold">
-            ULTRA<span className="text-primary">BANK</span>
-          </NavLink>
+          {(userLogin && !admin) || !userLogin ? (
+            <NavLink to="/" className="navbar-brand fs-2 fw-bold">
+              ULTRA<span className="text-primary">BANK</span>
+            </NavLink>
+          ) : (
+            <div className="navbar-brand fs-2 fw-bold">
+              ULTRA<span className="text-primary">BANK</span>
+            </div>
+          )}
+
           <button
             className="navbar-toggler"
             type="button"
@@ -38,14 +50,6 @@ function NavBar() {
             id="navbarNav"
           >
             <div className="navbar-nav nav-pills">
-              {/* <NavLink
-                to="/"
-                className={({ isActive }) =>
-                  isActive ? "nav-link fs-4 ms-3 active" : "nav-link fs-4 ms-3"
-                }
-              >
-                Home
-              </NavLink> */}
               {!userLogin ? (
                 <NavLink
                   to="createaccount"
@@ -61,7 +65,7 @@ function NavBar() {
               ) : (
                 ""
               )}
-              {userLogin ? (
+              {userLogin && !admin ? (
                 <NavLink
                   to="deposit"
                   className={({ isActive }) =>
@@ -75,7 +79,7 @@ function NavBar() {
               ) : (
                 ""
               )}
-              {userLogin ? (
+              {userLogin && !admin ? (
                 <NavLink
                   to="withdraw"
                   className={({ isActive }) =>
@@ -89,7 +93,7 @@ function NavBar() {
               ) : (
                 ""
               )}
-              {userLogin ? (
+              {userLogin && !admin ? (
                 <NavLink
                   to="transfer"
                   className={({ isActive }) =>
@@ -103,7 +107,7 @@ function NavBar() {
               ) : (
                 ""
               )}
-              {userLogin ? (
+              {userLogin && !admin ? (
                 <NavLink
                   to="activity"
                   className={({ isActive }) =>
@@ -117,14 +121,13 @@ function NavBar() {
               ) : (
                 ""
               )}
-              {/* <NavLink
-                to="alldata"
-                className={({ isActive }) =>
-                  isActive ? "nav-link fs-4 ms-3 active" : "nav-link fs-4 ms-3"
-                }
-              >
-                All Data
-              </NavLink> */}
+              {userLogin && admin ? (
+                <button className="btn btn-primary fs-4 ms-3">
+                  Support Dashboard
+                </button>
+              ) : (
+                ""
+              )}
             </div>
           </div>
         </div>

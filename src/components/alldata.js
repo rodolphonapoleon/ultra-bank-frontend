@@ -1,6 +1,7 @@
 // import { useContext } from "react";
 // import { UserContext } from "../context";
 import { useState, useEffect } from "react";
+import { Container } from "react-bootstrap";
 import Card from "../context";
 
 function AllData() {
@@ -12,7 +13,6 @@ function AllData() {
     fetch(`http://${process.env.REACT_APP_SERVER_URL}/account/all`)
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
         setData(data);
       });
   }, []);
@@ -20,15 +20,16 @@ function AllData() {
   const TableBody = () => {
     // const userdata = data.users.filter((item) => item.name != "");
     const rows = data.map((row, index) => {
-      return (
-        <tr key={index}>
-          <th scope="row">{index + 1}</th>
-          <td>{row.name}</td>
-          <td>{row.email}</td>
-          {/* <td>{row.password}</td> */}
-          <td>{row.balance}</td>
-        </tr>
-      );
+      if (row.email != "support@ultrabank.com") {
+        return (
+          <tr key={index}>
+            <th scope="row">{index + 1}</th>
+            <td>{row.name}</td>
+            <td>{row.email}</td>
+            <td>{row.balance}</td>
+          </tr>
+        );
+      }
     });
 
     return <tbody>{rows}</tbody>;
@@ -49,18 +50,20 @@ function AllData() {
   };
 
   return (
-    <Card
-      txtcolor="dark"
-      header="All data"
-      body={
-        <div className="table-responsive">
-          <table className="table table-striped">
-            <TableHeader />
-            <TableBody />
-          </table>
-        </div>
-      }
-    />
+    <Container className="mt-5">
+      <Card
+        txtcolor="dark"
+        header="All Customers Data"
+        body={
+          <div className="table-responsive">
+            <table className="table table-striped">
+              <TableHeader />
+              <TableBody />
+            </table>
+          </div>
+        }
+      />
+    </Container>
   );
 }
 
