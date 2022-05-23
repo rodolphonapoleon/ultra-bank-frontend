@@ -67,7 +67,7 @@ function Login() {
               return signInWithEmailAndPassword(auth, email, password)
                 .then((res) => {
                   const user = res.user;
-                  if (user.uid == process.env.REACT_APP_SUPPORT_UID) {
+                  if (user.uid == `${process.env.REACT_APP_SUPPORT_UID}`) {
                     setAdmin(true);
                   } else {
                     ctx.currentUser = data;
