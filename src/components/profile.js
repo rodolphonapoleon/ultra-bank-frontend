@@ -2,7 +2,7 @@ import { useContext, useState, useEffect } from "react";
 import { Col } from "react-bootstrap";
 import { Row } from "react-bootstrap";
 import { UserContext } from "../context";
-import LoginButton from "./loginbutton";
+import LoginButton from "./loginlogoutbutton";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { onAuthStateChanged, getIdToken } from "firebase/auth";
@@ -336,7 +336,7 @@ function Profile() {
                       ctx.currentUser.email
                     }/${JSON.stringify(user)}`,
                     {
-                      method: "GET",
+                      method: "PUT",
                       headers: {
                         Authorization: idToken,
                       },

@@ -1,14 +1,15 @@
 import Card from "../context";
-import banner from "../bank.png";
-import belfoto from "../belpic.jpg";
+import banner from "../images/bank.png";
+import belfoto from "../images/belpic.jpg";
 import { Image, Row, Col, Container } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { useContext, useEffect } from "react";
 import { UserContext } from "../context";
-import LoginButton from "./loginbutton";
-import pic1 from "../pic1.jpg";
-import pic2 from "../pic2.jpg";
-import pic3 from "../pic3.jpg";
+import LoginLogoutButton from "./loginlogoutbutton";
+import pic1 from "../images/pic1.jpg";
+import pic2 from "../images/pic2.jpg";
+import pic3 from "../images/pic3.jpg";
+import togetherblack2 from "../images/togetherblack2.png";
 import "@lottiefiles/lottie-player";
 
 function Home() {
@@ -29,7 +30,7 @@ function Home() {
 
       <Row>
         <Col className="text-end me-5">
-          <LoginButton />
+          <LoginLogoutButton />
         </Col>
       </Row>
 
@@ -80,66 +81,9 @@ function Home() {
           )}
         </div>
       </div>
-      <div className="row bg-primary">
-        <div
-          className="col"
-          style={{
-            width: "100%",
-            height: "6px",
-          }}
-        ></div>
-      </div>
-      {/* <div
-        id="carouselExampleSlidesOnly"
-        className="carousel slide"
-        data-bs-ride="carousel"
-      >
-        <div className="carousel-inner">
-          <div className="carousel-item active ps-4">
-            <Row className="">
-              <Col sm={4}>
-                {" "}
-                <img src={pic1} className="d-block w-100" alt="" />
-              </Col>
-              <Col sm={4}>
-                <img src={pic2} className="d-block w-100" alt="" />
-              </Col>
-              <Col sm={4}>
-                <img src={pic3} className="d-block w-100" alt="" />
-              </Col>
-            </Row>
-          </div>
-          <div className="carousel-item ps-4">
-            <Row className="">
-              <Col sm={4}>
-                {" "}
-                <img src={pic1} className="d-block w-100" alt="" />
-              </Col>
-              <Col sm={4}>
-                <img src={pic2} className="d-block w-100" alt="" />
-              </Col>
-              <Col sm={4}>
-                <img src={pic3} className="d-block w-100" alt="" />
-              </Col>
-            </Row>
-          </div>
-          <div className="carousel-item ps-4">
-            <Row className="">
-              <Col sm={4}>
-                {" "}
-                <img src={pic1} className="d-block w-100" alt="" />
-              </Col>
-              <Col sm={4}>
-                <img src={pic2} className="d-block w-100" alt="" />
-              </Col>
-              <Col sm={4}>
-                <img src={pic3} className="d-block w-100" alt="" />
-              </Col>
-            </Row>
-          </div>
-        </div>
-      </div> */}
-      {/* <div className="text-center fs-2 mt-5 mb-0">Benefits and features</div> */}
+
+      <img src={togetherblack2} className="img-fluid"></img>
+
       <div
         className="row"
         style={{
@@ -169,12 +113,12 @@ function Home() {
               send money
             </li>
             <li className="mb-2">
-              <i className="bi-check-circle text-primary me-2"></i>Deposit
-              checks from your mobile device
-            </li>
-            <li>
               <i className="bi-check-circle text-primary me-2"></i>Bank securely
               with the latest technology
+            </li>
+            <li>
+              <i className="bi-check-circle text-primary me-2"></i>Save more
+              everyday
             </li>
           </ul>
         </div>
@@ -189,7 +133,7 @@ function Home() {
         ></div>
       </div> */}
 
-      <div className="col text-center fs-2 mt-5">
+      <div className="col text-center fs-2 mt-5 mx-3">
         Online banking is changing the industry
       </div>
 

@@ -1,9 +1,9 @@
 import { UserContext } from "../context";
-import LoginButton from "./loginbutton";
+import LoginLogoutButton from "./loginlogoutbutton";
 import { useContext } from "react";
 import { Row, Col, Container } from "react-bootstrap";
 import { ToastContainer } from "react-toastify";
-import imageLogout from "../ULTRABANK.png";
+import imageLogout from "../images/ULTRABANK.png";
 import { Link } from "react-router-dom";
 
 function Logout() {
@@ -13,7 +13,7 @@ function Logout() {
       {/* <div className="text-end">{ctx.currentUser.name}</div> */}
       <Row>
         <Col className="text-end me-5">
-          <LoginButton />
+          <LoginLogoutButton />
         </Col>
       </Row>
       <Container className="px-md-5">

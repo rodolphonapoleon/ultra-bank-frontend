@@ -7,7 +7,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-function LoginButton() {
+function LoginLogoutButton() {
   const [userLogin, setUserLogin] = useState(false);
   const ctx = useContext(UserContext);
 
@@ -48,4 +48,4 @@ function LoginButton() {
   );
 }
 
-export default LoginButton;
+export default LoginLogoutButton;

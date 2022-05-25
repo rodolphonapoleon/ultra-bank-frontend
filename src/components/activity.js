@@ -2,11 +2,20 @@ import { useState, useEffect, useContext } from "react";
 import Card, { UserContext } from "../context";
 import { Col, Container, Row } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
-import LoginButton from "./loginbutton";
+import LoginLogoutButton from "./loginlogoutbutton";
+import { auth } from "../firebase-config";
+import { onAuthStateChanged, getIdToken } from "firebase/auth";
 
 function Activity() {
   const [data, setData] = useState([]);
   const ctx = useContext(UserContext);
+  const [idToken, setIdToken] = useState("");
+
+  useEffect(() => {
+    onAuthStateChanged(auth, async (user) => {
+      if (user) setIdToken(await getIdToken(user));
+    });
+  }, []);
 
   useEffect(() => {
     // fetch all accounts from API
@@ -18,15 +27,20 @@ function Activity() {
         setData(data);
       });
   }, []);
+
   const TableBody = () => {
     const rows = data.map((row, index) => {
       const dateInfo = row.date.split("T")[0].split("-");
       const usFormatDate = `${dateInfo[1]}-${dateInfo[2]}-${dateInfo[0]}`;
+      const amountField =
+        row.type == "WITHDRAW" || row.type == "TRANSFER(sent)"
+          ? `-${row.amount}`
+          : `${row.amount}`;
       return (
         <tr key={index}>
           <td>{usFormatDate}</td>
           <td>{row.type}</td>
-          <td>{row.amount}</td>
+          <td>{amountField}</td>
           <td>{row.currentBalance}</td>
         </tr>
       );
@@ -57,7 +71,7 @@ function Activity() {
       </div>
       <Row>
         <Col className="text-end me-5">
-          <LoginButton />
+          <LoginLogoutButton />
         </Col>
       </Row>
       <Container className="mt-5">

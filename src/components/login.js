@@ -3,8 +3,8 @@ import Card from "../context";
 import { UserContext } from "../context";
 import { NavLink, Link } from "react-router-dom";
 import { Row, Col, Container } from "react-bootstrap";
-import LoginButton from "./loginbutton";
-import googlePic from "../pngegg.png";
+import LoginLogoutButton from "./loginlogoutbutton";
+import googlePic from "../images/pngegg.png";
 import { auth } from "../firebase-config";
 
 import {
@@ -43,18 +43,34 @@ function Login() {
   const [emailToSupport, setEmailToSupport] = useState("");
   const [transactionInfo, setTransactionInfo] = useState(false);
 
-  // const [data, setData] = useState([]);
-  // useEffect(async () => {
-  //   // fetch all accounts from API
-  //   await fetch(`http://${process.env.REACT_APP_SERVER_URL}/account/all`)
-  //     .then((response) => response.json())
-  //     .then((data) => {
-  //       // console.log(data);
-  //       setData(data);
-  //     });
-  // }, []);
+  function validate(field, label) {
+    if (!field) {
+      alert(`${label} is required. You can't leave it blank.`);
+      return false;
+    }
+    if (field === email) {
+      if (
+        !String(email)
+          .toLowerCase()
+          .match(
+            /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+          )
+      ) {
+        alert("Email address invalid. Please enter a valid email");
+        clearForm();
+        return false;
+      }
+    }
+    return true;
+  }
 
   function handleLogin() {
+    if (!validate(email, "Email")) {
+      return;
+    }
+    if (!validate(password, "Password")) {
+      return;
+    }
     (async () => {
       // fetch one account
       await fetch(
@@ -95,38 +111,6 @@ function Login() {
           clearForm();
         });
     })();
-    // setPersistence(auth, browserSessionPersistence)
-    //   .then(() => {
-    //     return signInWithEmailAndPassword(auth, email, password)
-    //       .then((res) => {
-    //         // console.log(res.user);
-    //         const user = res.user;
-    //         if (user.uid == "dNcefFtCksNbiBOjEVPc046LYrj1") {
-    //           setAdmin(true);
-    //         } else {
-    //           const userLoginData = data.filter(
-    //             (item) => item.email == user.email
-    //           );
-    //           // console.log(user.uid);
-
-    //           ctx.currentUser = userLoginData[0];
-    //           setShow(false);
-    //           // ctx.log = true;
-    //           // console.log(ctx.currentUser);
-    //           window.sessionStorage.setItem("CONTEXT_APP", JSON.stringify(ctx));
-    //         }
-    //       })
-    //       .catch((error) => {
-    //         alert("email or password is incorrect");
-    //         clearForm();
-    //         const errorCode = error.code;
-    //         console.log(errorCode);
-    //       });
-    //   })
-    //   .catch((error) => {
-    //     // Handle Errors here.
-    //     const errorCode = error.code;
-    //   });
   }
 
   function handleLoginwithgoogle() {
@@ -157,7 +141,12 @@ function Login() {
                 .catch((error) => {
                   const url = `http://${process.env.REACT_APP_SERVER_URL}/account/create/${user.displayName}/${user.email}`;
                   (async () => {
-                    var res = await fetch(url);
+                    var res = await fetch(url, {
+                      method: "POST",
+                      headers: {
+                        Authorization: user.accessToken,
+                      },
+                    });
                     var datass = await res.json();
                     // console.log(data);
                   })();
@@ -193,68 +182,6 @@ function Login() {
       });
   }
 
-  // function handleLoginwithgoogle() {
-  //   const provider = new GoogleAuthProvider();
-  //   setPersistence(auth, browserSessionPersistence)
-  //     .then(() => {
-  //       return signInWithPopup(auth, provider)
-  //         .then((result) => {
-  //           // This gives you a Google Access Token. You can use it to access the Google API.
-  //           const credential = GoogleAuthProvider.credentialFromResult(result);
-  //           const token = credential.accessToken;
-  //           // The signed-in user info.
-  //           const user = result.user;
-  //           const userLoginData = data.filter(
-  //             (item) => item.email == user.email
-  //           );
-  //           // console.log(userLoginData);
-  //           if (userLoginData.length == 0) {
-  //             const url = `http://${process.env.REACT_APP_SERVER_URL}/account/create/${user.displayName}/${user.email}`;
-  //             (async () => {
-  //               var res = await fetch(url);
-  //               var data = await res.json();
-  //               // console.log(data);
-  //             })();
-
-  //             ctx.currentUser = {
-  //               name: user.displayName,
-  //               email: user.email,
-  //               balance: 0,
-  //             };
-  //             setShow(false);
-  //             setGoogleUser(true);
-  //           }
-  //           if (userLoginData.length != 0) {
-  //             ctx.currentUser = userLoginData[0];
-  //             setShow(false);
-  //           }
-  //           // ...
-  //           window.sessionStorage.setItem("CONTEXT_APP", JSON.stringify(ctx));
-  //         })
-  //         .catch((error) => {
-  //           // Handle Errors here.
-  //           const errorCode = error.code;
-  //           const errorMessage = error.message;
-  //           // The email of the user's account used.
-  //           const email = error.email;
-  //           // The AuthCredential type that was used.
-  //           const credential = GoogleAuthProvider.credentialFromError(error);
-  //           // ...
-  //         });
-  //     })
-  //     .catch((error) => {
-  //       // Handle Errors here.
-  //       const errorCode = error.code;
-  //     });
-  // }
-
-  // function PromiseTest(email) {
-  //   return new Promise((res, rej) => {
-  //     verifyAccount(email);
-  //     res("done");
-  //   });
-  // }
-
   function verifyAccount(email) {
     (async () => {
       // fetch one account
@@ -288,14 +215,13 @@ function Login() {
     setEmailToSupport("");
   }
 
-  // console.log(show);
   return (
     <>
       {admin ? (
         <>
           <Row>
             <Col className="text-end me-5">
-              <LoginButton />
+              <LoginLogoutButton />
             </Col>
           </Row>
           <Container>
@@ -533,7 +459,7 @@ function Login() {
                   </div>
                   <Row>
                     <Col className="text-end me-5">
-                      <LoginButton />
+                      <LoginLogoutButton />
                     </Col>
                   </Row>
                   <div className="fs-1 mt-4 text-center text-primary">
@@ -568,7 +494,7 @@ function Login() {
                   </div>
                   <Row>
                     <Col className="text-end me-5">
-                      <LoginButton />
+                      <LoginLogoutButton />
                     </Col>
                   </Row>
                   <Card

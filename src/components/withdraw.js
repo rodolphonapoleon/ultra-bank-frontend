@@ -1,7 +1,7 @@
 import { useState, useContext, useEffect } from "react";
 import Card from "../context";
 import { UserContext } from "../context";
-import LoginButton from "./loginbutton";
+import LoginLogoutButton from "./loginlogoutbutton";
 import { Row, Col } from "react-bootstrap";
 import { auth } from "../firebase-config";
 import { onAuthStateChanged, getIdToken } from "firebase/auth";
@@ -54,7 +54,7 @@ function Withdraw() {
       email: ctx.currentUser.email,
       date: new Date(),
       type: "WITHDRAW",
-      amount: -amount,
+      amount: Number(amount),
       currentBalance: ctx.currentUser.balance,
     };
 
@@ -62,7 +62,7 @@ function Withdraw() {
       await fetch(
         `http://${process.env.REACT_APP_SERVER_URL}/account/update/${ctx.currentUser.email}/-${amount}`,
         {
-          method: "GET",
+          method: "PUT",
           headers: {
             Authorization: idToken,
           },
@@ -75,7 +75,7 @@ function Withdraw() {
           process.env.REACT_APP_SERVER_URL
         }/account/createtransaction/${JSON.stringify(transaction)}`,
         {
-          method: "GET",
+          method: "POST",
           headers: {
             Authorization: idToken,
           },
@@ -102,7 +102,7 @@ function Withdraw() {
       </div>
       <Row>
         <Col className="text-end me-5">
-          <LoginButton />
+          <LoginLogoutButton />
         </Col>
       </Row>
       {show ? (

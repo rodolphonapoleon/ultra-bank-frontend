@@ -3,9 +3,9 @@ import { useState, useContext, useEffect } from "react";
 import Card from "../context";
 import { UserContext } from "../context";
 import { NavLink, Link } from "react-router-dom";
-import LoginButton from "./loginbutton";
+import LoginLogoutButton from "./loginlogoutbutton";
 import { Row, Col } from "react-bootstrap";
-import googlePic from "../pngegg.png";
+import googlePic from "../images/pngegg.png";
 import { auth } from "../firebase-config";
 import {
   createUserWithEmailAndPassword,
@@ -14,7 +14,6 @@ import {
   onAuthStateChanged,
   setPersistence,
   browserSessionPersistence,
-  sendEmailVerification,
 } from "firebase/auth";
 
 const LoginUser = ({ user }) => {
@@ -42,17 +41,6 @@ function CreateAccount() {
   const [userLogin, setUserLogin] = useState(false);
   const [checked, setChecked] = useState(false);
   const ctx = useContext(UserContext);
-
-  // const [data, setData] = useState([]);
-  // useEffect(async () => {
-  //   // fetch all accounts from API
-  //   await fetch(`http://${process.env.REACT_APP_SERVER_URL}/account/all`)
-  //     .then((response) => response.json())
-  //     .then((data) => {
-  //       // console.log(data);
-  //       setData(data);
-  //     });
-  // }, []);
 
   onAuthStateChanged(auth, (user) => {
     if (user) {
@@ -111,25 +99,30 @@ function CreateAccount() {
           .then((userCredential) => {
             // Signed in
             const user = userCredential.user;
+            // console.log(userCredential);
             ctx.currentUser = {
               name: name,
               email: email,
               balance: 0,
             };
             window.sessionStorage.setItem("CONTEXT_APP", JSON.stringify(ctx));
-            ctx.userLogin = true;
-            // createAccount();
+            // ctx.userLogin = true;
             const url = `http://${process.env.REACT_APP_SERVER_URL}/account/create/${ctx.currentUser.name}/${ctx.currentUser.email}`;
             (async () => {
-              var res = await fetch(url);
-              var data = await res.json();
+              await fetch(url, {
+                method: "POST",
+                headers: {
+                  Authorization: user.accessToken,
+                },
+              });
+              // var data = await res.json();
               // console.log(data);
             })();
             setShow(false);
+            ctx.info = userCredential;
             // ctx.login = true;
           })
           .catch((error) => {
-            console.log(error.message);
             if (error.code == "auth/email-already-in-use") {
               alert(
                 "Sorry. An account is already associated to this email address"
@@ -175,7 +168,12 @@ function CreateAccount() {
                 .catch((error) => {
                   const url = `http://${process.env.REACT_APP_SERVER_URL}/account/create/${user.displayName}/${user.email}`;
                   (async () => {
-                    var res = await fetch(url);
+                    var res = await fetch(url, {
+                      method: "POST",
+                      headers: {
+                        Authorization: user.accessToken,
+                      },
+                    });
                     var datass = await res.json();
                     // console.log(data);
                   })();
@@ -210,63 +208,6 @@ function CreateAccount() {
       });
   }
 
-  // function handleLoginwithgoogle() {
-  //   const provider = new GoogleAuthProvider();
-  //   setPersistence(auth, browserSessionPersistence)
-  //     .then(() => {
-  //       return signInWithPopup(auth, provider)
-  //         .then((result) => {
-  //           // This gives you a Google Access Token. You can use it to access the Google API.
-  //           const credential = GoogleAuthProvider.credentialFromResult(result);
-  //           const token = credential.accessToken;
-  //           // The signed-in user info.
-  //           const user = result.user;
-  //           const userLoginData = data.filter(
-  //             (item) => item.email == user.email
-  //           );
-  //           // console.log(userLoginData);
-  //           if (userLoginData.length == 0) {
-  //             const url = `http://${process.env.REACT_APP_SERVER_URL}/account/create/${user.displayName}/${user.email}`;
-  //             (async () => {
-  //               var res = await fetch(url);
-  //               var data = await res.json();
-  //               // console.log(data);
-  //             })();
-
-  //             ctx.currentUser = {
-  //               name: user.displayName,
-  //               email: user.email,
-  //               balance: 0,
-  //             };
-  //             window.sessionStorage.setItem("CONTEXT_APP", JSON.stringify(ctx));
-  //             setShow(false);
-  //           }
-  //           if (userLoginData.length != 0) {
-  //             ctx.currentUser = userLoginData[0];
-  //             window.sessionStorage.setItem("CONTEXT_APP", JSON.stringify(ctx));
-  //             setShow(false);
-  //             setGoogleUserExist(true);
-  //           }
-  //           // ...
-  //         })
-  //         .catch((error) => {
-  //           // Handle Errors here.
-  //           const errorCode = error.code;
-  //           const errorMessage = error.message;
-  //           // The email of the user's account used.
-  //           const email = error.email;
-  //           // The AuthCredential type that was used.
-  //           const credential = GoogleAuthProvider.credentialFromError(error);
-  //           // ...
-  //         });
-  //       // ctx.userLogin = true;
-  //     })
-  //     .catch((error) => {
-  //       // Handle Errors here.
-  //       const errorCode = error.code;
-  //     });
-  // }
-
   function clearForm() {
     setName("");
     setEmail("");
@@ -299,7 +240,7 @@ function CreateAccount() {
                     </li>
                     <li className="d-flex mb-0">
                       <i className="bi-check-circle text-primary me-2"></i>
-                      <span>Deposit checks from your mobile device</span>
+                      <span>Bank securely with the latest technology</span>
                     </li>
                   </ul>
                   <div className="d-flex justify-content-center">
@@ -501,7 +442,7 @@ function CreateAccount() {
               </div>
               <Row>
                 <Col className="text-end me-5">
-                  <LoginButton />
+                  <LoginLogoutButton />
                 </Col>
               </Row>
               <Card
@@ -513,14 +454,25 @@ function CreateAccount() {
                     <LoginUser user={ctx.currentUser} />
                     <br />
                     <Row className="text-center">
-                      <Col>
-                        <NavLink to="/deposit" className="btn btn-primary">
-                          Make a deposit
+                      <Col sm={12}>
+                        <NavLink to="/deposit" className="btn btn-primary w-75">
+                          DEPOSIT
                         </NavLink>
                       </Col>
-                      <Col>
-                        <NavLink to="/withdraw" className="btn btn-primary">
-                          Make a withdraw
+                      <Col sm={12} className="my-3">
+                        <NavLink
+                          to="/withdraw"
+                          className="btn btn-primary w-75"
+                        >
+                          WITHDRAW
+                        </NavLink>
+                      </Col>
+                      <Col sm={12} className="mb-5">
+                        <NavLink
+                          to="/transfer"
+                          className="btn btn-primary w-75"
+                        >
+                          TRANSFER
                         </NavLink>
                       </Col>
                     </Row>
@@ -538,7 +490,7 @@ function CreateAccount() {
               </div>
               <Row>
                 <Col className="text-end me-5">
-                  <LoginButton />
+                  <LoginLogoutButton />
                 </Col>
               </Row>
               <div className="fs-1 mt-4 text-center text-primary">

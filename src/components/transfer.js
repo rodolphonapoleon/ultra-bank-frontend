@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import Card from "../context";
-import LoginButton from "./loginbutton";
+import LoginLogoutButton from "./loginlogoutbutton";
 import { Row, Col } from "react-bootstrap";
 import { auth } from "../firebase-config";
 import { onAuthStateChanged, getIdToken } from "firebase/auth";
@@ -12,22 +12,10 @@ function Transfer() {
   const [status, setStatus] = useState("");
   const [amount, setAmount] = useState("");
   const [isDisabled, setIsdisabled] = useState(true);
-  // const [currentUser, setCurrentUser] = useState({});
   const [idToken, setIdToken] = useState("");
   const [emailToTransfer, setEmailToTransfer] = useState("");
 
   const ctx = useContext(UserContext);
-
-  // const [data, setData] = useState([]);
-  // useEffect(async () => {
-  //   // fetch all accounts from API
-  //   await fetch(`http://${process.env.REACT_APP_SERVER_URL}/account/all`)
-  //     .then((response) => response.json())
-  //     .then((data) => {
-  //       // console.log(data);
-  //       setData(data);
-  //     });
-  // }, []);
 
   useEffect(() => {
     onAuthStateChanged(auth, async (user) => {
@@ -82,19 +70,26 @@ function Transfer() {
             "CONTEXT_APP",
             JSON.stringify({ ...ctx })
           );
-          const transaction = {
+          const transactionS = {
             email: ctx.currentUser.email,
             date: new Date(),
-            type: "TRANSFER",
-            amount: -amount,
+            type: "TRANSFER(sent)",
+            amount: Number(amount),
             currentBalance: ctx.currentUser.balance,
+          };
+          const transactionR = {
+            email: data.email,
+            date: new Date(),
+            type: "TRANSFER(received)",
+            amount: Number(amount),
+            currentBalance: data.balance + Number(amount),
           };
 
           (async () => {
             await fetch(
               `http://${process.env.REACT_APP_SERVER_URL}/account/update/${ctx.currentUser.email}/-${amount}`,
               {
-                method: "GET",
+                method: "PUT",
                 headers: {
                   Authorization: idToken,
                 },
@@ -105,7 +100,7 @@ function Transfer() {
             await fetch(
               `http://${process.env.REACT_APP_SERVER_URL}/account/update/${emailToTransfer}/${amount}`,
               {
-                method: "GET",
+                method: "PUT",
                 headers: {
                   Authorization: idToken,
                 },
@@ -116,9 +111,22 @@ function Transfer() {
             await fetch(
               `http://${
                 process.env.REACT_APP_SERVER_URL
-              }/account/createtransaction/${JSON.stringify(transaction)}`,
+              }/account/createtransaction/${JSON.stringify(transactionS)}`,
               {
-                method: "GET",
+                method: "POST",
+                headers: {
+                  Authorization: idToken,
+                },
+              }
+            );
+          })();
+          (async () => {
+            await fetch(
+              `http://${
+                process.env.REACT_APP_SERVER_URL
+              }/account/createtransaction/${JSON.stringify(transactionR)}`,
+              {
+                method: "POST",
                 headers: {
                   Authorization: idToken,
                 },
@@ -133,63 +141,6 @@ function Transfer() {
           clearForm();
         });
     })();
-
-    ///////////////
-
-    // const userToTransfer = data.filter((item) => item.email == emailToTransfer);
-    // // console.log(userToTransfer);
-    // if (userToTransfer.length == 0) {
-    //   alert("There's no account associated to this email");
-    //   clearForm();
-    //   return;
-    // }
-    // ctx.currentUser.balance -= parseInt(amount);
-    // window.sessionStorage.setItem("CONTEXT_APP", JSON.stringify({ ...ctx }));
-    // const transaction = {
-    //   email: ctx.currentUser.email,
-    //   date: new Date(),
-    //   type: "TRANSFER",
-    //   amount: -amount,
-    //   currentBalance: ctx.currentUser.balance,
-    // };
-
-    // (async () => {
-    //   await fetch(
-    //     `http://${process.env.REACT_APP_SERVER_URL}/account/update/${ctx.currentUser.email}/-${amount}`,
-    //     {
-    //       method: "GET",
-    //       headers: {
-    //         Authorization: idToken,
-    //       },
-    //     }
-    //   );
-    // })();
-    // (async () => {
-    //   await fetch(
-    //     `http://${process.env.REACT_APP_SERVER_URL}/account/update/${emailToTransfer}/${amount}`,
-    //     {
-    //       method: "GET",
-    //       headers: {
-    //         Authorization: idToken,
-    //       },
-    //     }
-    //   );
-    // })();
-    // (async () => {
-    //   await fetch(
-    //     `http://${
-    //       process.env.REACT_APP_SERVER_URL
-    //     }/account/createtransaction/${JSON.stringify(transaction)}`,
-    //     {
-    //       method: "GET",
-    //       headers: {
-    //         Authorization: idToken,
-    //       },
-    //     }
-    //   );
-    // })();
-
-    // setShow(false);
   }
 
   function clearForm() {
@@ -209,7 +160,7 @@ function Transfer() {
       </div>
       <Row>
         <Col className="text-end me-5">
-          <LoginButton />
+          <LoginLogoutButton />
         </Col>
       </Row>
       {show ? (
@@ -246,7 +197,7 @@ function Transfer() {
                 placeholder="Enter recipient email"
                 value={emailToTransfer}
                 onChange={(e) => {
-                  setEmailToTransfer(e.currentTarget.value);
+                  setEmailToTransfer(e.currentTarget.value.toLowerCase());
                   setIsdisabled(false);
                   if (!e.currentTarget.value) setIsdisabled(true);
                 }}

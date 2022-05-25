@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
-import { auth } from "./firebase-config";
+import { auth } from "../firebase-config";
 import { onAuthStateChanged } from "firebase/auth";
 
 function NavBar() {

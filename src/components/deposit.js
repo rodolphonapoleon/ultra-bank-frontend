@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from "react";
 import Card from "../context";
-import LoginButton from "./loginbutton";
+import LoginButton from "./loginlogoutbutton";
 import { Row, Col } from "react-bootstrap";
 import { auth } from "../firebase-config";
 import { onAuthStateChanged, getIdToken } from "firebase/auth";
@@ -41,21 +41,21 @@ function Deposit() {
   function handleDeposit() {
     // console.log(amount);
     if (!validate(amount, "amount")) return;
-    ctx.currentUser.balance += parseInt(amount);
+    ctx.currentUser.balance += Number(amount);
     window.sessionStorage.setItem("CONTEXT_APP", JSON.stringify({ ...ctx }));
 
     const transaction = {
       email: ctx.currentUser.email,
       date: new Date(),
       type: "DEPOSIT",
-      amount: amount,
+      amount: Number(amount),
       currentBalance: ctx.currentUser.balance,
     };
     (async () => {
       await fetch(
         `http://${process.env.REACT_APP_SERVER_URL}/account/update/${ctx.currentUser.email}/${amount}`,
         {
-          method: "GET",
+          method: "PUT",
           headers: {
             Authorization: idToken,
           },
@@ -68,7 +68,7 @@ function Deposit() {
           process.env.REACT_APP_SERVER_URL
         }/account/createtransaction/${JSON.stringify(transaction)}`,
         {
-          method: "GET",
+          method: "POST",
           headers: {
             Authorization: idToken,
           },

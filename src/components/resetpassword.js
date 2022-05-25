@@ -3,9 +3,9 @@ import { useState } from "react";
 import { Col, Row } from "react-bootstrap";
 import Card from "../context";
 import { auth } from "../firebase-config";
-import LoginButton from "./loginbutton";
+import LoginLogoutButton from "./loginlogoutbutton";
 
-function ForgotPassword() {
+function ResetPassword() {
   const [email, setEmail] = useState("");
   const [show, setShow] = useState(true);
 
@@ -60,7 +60,7 @@ function ForgotPassword() {
         <>
           <Row>
             <Col className="text-end me-5">
-              <LoginButton />
+              <LoginLogoutButton />
             </Col>
           </Row>
           <Card
@@ -103,7 +103,7 @@ function ForgotPassword() {
         <>
           <Row>
             <Col className="text-end me-5">
-              <LoginButton />
+              <LoginLogoutButton />
             </Col>
           </Row>
           <Card
@@ -130,4 +130,4 @@ function ForgotPassword() {
   );
 }
 
-export default ForgotPassword;
+export default ResetPassword;
